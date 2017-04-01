@@ -1,0 +1,37 @@
+<ion-header color="danger">
+  <ion-title style="text-align: center">
+    Your Babies
+  </ion-title>
+</ion-header>
+
+<ion-content padding>
+  <h2 *ngIf="getCount(babies | async)==0"> Add your baby's profile to get started </h2>
+  <baby *ngFor="let baby of babies | async" (babyclick)="showBaby($event)" id={{baby.$key}} img="{{baby.img}}" name="{{baby.name}}"
+    dob="{{baby.dob}}" gender="{{baby.gender}}" momsname="{{baby.momsname}}"> </baby>
+  <ion-list *ngIf="showAddDialog">
+    <ion-item>
+      <ion-label stacked> Name </ion-label>
+      <ion-input type="text" [(ngModel)]="name"> </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label stacked> Date of Birth </ion-label>
+      <ion-datetime [(ngModel)]="dob"> </ion-datetime>
+    </ion-item>
+    <ion-item>
+      <input type="file" (change)="upload($event)" />
+    </ion-item>
+    <button ion-button color="primary" (click)="addBaby()"> Create Baby's Profile </button>
+  </ion-list>
+  <ion-fab right bottom>
+    <button ion-fab color="danger" (click)="newBaby()"> 
+      <ion-icon name="add"> </ion-icon>
+    </button>
+  </ion-fab>
+
+<!--
+  <div class="progress-container">
+    <progress class="progress" max="100" value="75">
+    </progress>
+  </div>
+  -->
+</ion-content>

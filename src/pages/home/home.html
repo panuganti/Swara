@@ -7,8 +7,174 @@
 </ion-header>
 
 <ion-content>
-  <img src="http://placehold.it/400x200" style="width:100%; height: 150px">
+  <!-- Begin Date Selector -->
+  <ion-card>
+    <ion-grid>
+      <ion-row>
+        <ion-col width-25>
+          <ion-item>
+            <button ion-button clear item-left icon-left (click)="prevDate()">  <ion-icon name="arrow-back"></ion-icon> </button>
+          </ion-item>
+        </ion-col>
+        <ion-col width-50>
+          <ion-datetime displayFormat="MMM DD YYYY" [(ngModel)]="pageDate"> </ion-datetime>
+        </ion-col>
+        <ion-col width-25>
+          <ion-item *ngIf="showNextDate">
+            <button ion-button clear item-left icon-right (click)="nextDate()">  <ion-icon name="arrow-forward"></ion-icon> </button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+ <!-- End Date Selector -->
 
+ <!-- Begin Add Record -->
+  <ion-grid>
+    <ion-row>
+      <ion-col width-40>
+        <button ion-button outline large mode="ios" (click)="showFeedingDialog()">
+         + <img src="https://d30y9cdsu7xlg0.cloudfront.net/png/2735-200.png" style="height: 50px">
+        </button>
+      </ion-col>
+      <ion-col width-40>
+        <button ion-button outline large mode="ios" (click)="showPumpingDialog()">
+         + <img src="https://www.motherlove.com/images/uploads/blog/Pumping-Mom.jpg" style="height: 50px">
+        </button>
+      </ion-col>
+      <ion-col width-40>
+        <button ion-button outline large mode="ios" (click)="showDiaperDialog()">
+         + <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAMAAAC8EZcfAAAAhFBMVEX///8AAADx8fFcXFzPz8/i4uLo6Ohvb2+8vLwvLy/t7e3m5ub4+PiZmZnDw8NFRUU4ODiurq5/f3+SkpJQUFCnp6dAQEBLS0tVVVXa2toRERFiYmKFhYXc3NzU1NS+vr4iIiJ1dXWKioooKCgaGhqUlJQODg6fn580NDRoaGhxcXEXFxcrIyUkAAAG30lEQVR4nO2b6ZKCOBCADQICIqcgDqDgjfP+77eNjkowCQmIu1Wb79cUwdA0nb6SmUwkEolEIpFIJBKJRCKRSCQSiUQikUgkbyhfob98WjX9Bgu7r4AB+g7zvgLOviSgNkDAxUalsdmdUEodfd6VIBTQJ1HX+2ECbhnDZ4R23ZNECKWscXOYgAZjOAQFd0+yRujEGh9RwACdou5JdDAy1vh4AuopKpzuSRQwQtZt4wmYu+iy7p7E3iEUMsbHE1DdI5cnChgIVYzh8QR0EFryzAL3rRjD5jBHzRCwQzNP1jEyN29XFQvQdV0BP6jqWr7eALk2n+sWf+RjCwhuMOOZRanQj9++uKlW8WV/OBHiihdypw9MAW2I1BxeBti9+0uFGUU53P+dkuUglCl8G65pCKreeE2Bfou9efEA0OntAvWZiWcWP+9v9Gu60yDa6JhxWGDdfNbiFChprYN6gVESQXtFV0tXehU0BeqKEI07YZW0dO3DZJS77SNCR8pY0iEg9kMNNMsn4GTZ1omdMewXvMOMMrRCe0Ofw0rHmc811VjM4JO6DRV2uLcmV4TwZaykDPuFiRPyiOKimBG7YNZ9QxEh/Su1gQ96xQzOujDsVz3Q3tyKkcsKrhk6NRRR8XqZmzV4VvMC035VE8UWcQSM2c0Zzzli/gwcxXt8oADy6NwCQuTxyNF57rE1eMbSEiQQQ/ctk8sRMqk35ytSaKwBDbJssE7eGz4eoYNOvxcnaLnqLXUdAFqC9uQVBAJ6rK8WnRqPAbtyyZZCADyHi81E9yQgxhRbjA2UGF1YAvo/jXVbeyvuoK61bC5k5Rn0TN12abolCLgAg+TOi6wCoebbBPRgATfTS4kVOnALWLILKhzIuDBXzXRRDAHfQlJLwKYNTtk1c4sz7tWnrLfTU5oNTjrqL2wVr9APR0n3AJbtFH8Q/e1gkbRziwdpZyfh6Qf1jgXVAsJXs8BiagLcDK1aLNtBHWfRMG0o6do5HgttiX02ln3YqkcLdV29DBg+P/72f1vxn41dYsuiImrC1teqY2QuPU3yWzlpi10jWeBrHL0IsTCZYZpQNHXrn4+7Mo2Lv8yYMguESJcRvgJUPD9MyPJkBGCBla93B01csiwLylmaLFext8cLDbqDvQ0fVrPQV+us1VIU237eDMb7yjK4S7o/IIdqZEo6MV//KTw3KX1WhMeLwcJbptcgXES+bxiGnxUv27AqVPD76cktSjWCQN2vaRBPq2B3PPtO3hWbdL+MWTVJ+biRnhLRwBeu4hh+5Bvb7RbcAXJ0hTtq2pauOVGQunuSgM8vTM96aWQ0DzGkNwPFTmhE53AXlGUZhP7rNXkbRy/qWEL0SwO7WxR/uu1oPL+jgE0TdT5O+y3iL+keIIogowhYF95n4ggdlzLZKALyN45eHClp/igCWh6eIfOgIrQnXR9FQP7GUfdv/jMC1lonSTKKgAKNoyd1R5a0sEYRcNGIetzULSTC5YECkjPzmbiXoUafgbudcUYKlLG4l7nFb681WX6+JjQHzsO9JfyT5W2X0u5WcQHl5OFpMYq1Dt1HDtI7WdCuf8345VnF4ihILS7g5Bl+5k5UFQ/pvLT/mYWJvTGCezJ+SM+v/A+8jGCydWNxq2N0P3v2wuPSdzY9ZsJk1LfT+2zm9FEygbmnPQ6TQCVYbUvvb3fpNDPmArtebKL0cp81uyXltSp6TJ0/dm8ObhUNOC1Dnvxc3TeBZqpSLx5WgU9ldZOuCo1PKQ5DUc/3eqVymK0VOjr8vjiqA22OheLcPENdxAo0jp5AlrsUq7R6MA/MWkaRxtGDuv0hHn/EyXcgIrPZTmH9vmU3EhCz+nziPilQT/p9K5/V2v8s1BqXhX0VbOcMwIaVLByLaRn1KPTJQPqUCb2Je6wSWlU3ChnniZQmuz5lQl8M4d7RbROmVwDvhdZxJpAEmCBrM/qz9DF4eKceWXhPLFdYHbBGkk/ngHTqk02CBgVJbjZKGkh/nNgvxF9pEIZwh7VjJ/XTOD/4Hn8n+YV93ODT1LmdUEpoHFA6Yq7/hlWhXyGTEjfagRAOLTKh9N7GA98c7CRfUbf5R6I+oyxghM6J70jz57BdIbcRcZ4Y/iAzESOsty2+le4/gNhqcvuN9Tez6QdI4GTPVDjwfIAQUniuIkjzoUzt0TIeSn1g7BJ0rOTcD5a3huA3M5kH2997e3hn5PX5Buvvv+RuJ/Q11dhVr8178/gvyAfOLX3txReeu0ySabJceWaBMC6zsEcn5yNYRnYhnRx4cnKvkbP5rofGsS3dyBLzTbIiTrNIFfrXi7GxrbmWa9rn+uISiUQikUgkEolEIpFIJP8D/gEGpVvPXEWjBQAAAABJRU5ErkJggg==" style="height: 50px">
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+ <!-- End Add Record -->
+
+ <!-- Begin Add Feeding Record -->
+  <ion-card *ngIf="showFeeding">
+    <ion-card-header> Feeding </ion-card-header>
+    <ion-list>
+      <ion-item>
+        <ion-label color="primary">Feeding Type</ion-label>
+        <ion-select [(ngModel)]="feedingType">
+          <ion-option value="breastfeeding">Breast Feeding</ion-option>
+          <ion-option value="pumped">Pumped Breast Milk</ion-option>
+          <ion-option value="formula">Formula</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <ion-card-content *ngIf="feedingType == 'breastfeeding'">
+      <time-date-vol volumelabel="Duration (in mins)" defaultDate="{{pageDate}}" defaultVolume="0" (save)="saveFeeding($event,'breastfeeding')"></time-date-vol>
+    </ion-card-content>
+    <ion-card-content *ngIf="feedingType == 'pumped'">
+      <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{pageDate}}" defaultVolume="0" (save)="saveFeeding($event,'pumped')"></time-date-vol>
+    </ion-card-content>
+    <ion-card-content *ngIf="feedingType == 'formula'">
+      <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{pageDate}}" defaultVolume="0" (save)="saveFeeding($event,'formula')"></time-date-vol>
+    </ion-card-content>
+  </ion-card>
+ <!-- End Add Feeding Record -->
+
+ <!-- Begin Add Pumping Record -->
+  <ion-card *ngIf="showPumping">
+    <ion-card-header> Pumping </ion-card-header>
+      <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{pageDate}}" defaultVolume="0" (save)="savePumping($event)"></time-date-vol>
+  </ion-card>
+ <!-- End Add Pumping Record -->
+
+ <!-- Begin Add Diaper Record -->
+  <ion-card *ngIf="showDiaper">
+    <diaper defaultDate="{{pageDate}}" (save)="saveDiaper($event)"> </diaper>
+  </ion-card>
+ <!-- End Add Diaper Record -->
+
+ <!-- Begin Add Feeding Summary -->
+  <ion-card color="primary">
+    <ion-card-header>
+      Feeding
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item-sliding>
+          <ion-item>
+            <h2 ion-text color="dark"> {{getLastFeedType(feeding | async, yestfeeding | async)}} {{getLastFeedTime(feeding | async, yestfeeding | async)}} ago</h2>
+          </ion-item>
+          <ion-item-options side="right">
+            <button ion-button color="primary" (click)="addPumpedFeeding()">
+            <ion-icon name="text"> </ion-icon>
+            Pumped 
+          </button>
+            <button ion-button color="primary" (click)="addFormulaFeeding()">
+            <ion-icon name="text"> </ion-icon>
+            Formula 
+          </button>
+            <button ion-button color="primary" (click)="addBreastFeeding()">
+          <ion-icon name="text"> </ion-icon>
+          Breastfed 
+        </button>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+ <!-- End Add Feeding Summary -->
+
+ <!-- Begin Add Pumping Summary -->
+  <ion-card color="secondary">
+    <ion-card-header>
+      Pumping
+    </ion-card-header>
+    <ion-list>
+      <ion-item-sliding>
+        <ion-item>
+          <h2 ion-text color="dark"> Pumped {{getLastPumpedTime(pumping | async, yestpumping | async)}} ago</h2>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="primary">
+          <ion-icon name="text"> </ion-icon>
+          Pumping 
+        </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-card>
+ <!-- End Add Feeding Summary -->
+
+  <!-- Begin Add Diaper Summary -->
+  <ion-card color="dark">
+    <ion-card-header>
+      Diaper
+    </ion-card-header>
+    <ion-list>
+      <ion-item-sliding>
+        <ion-item>
+          <h2 ion-text color="dark"> Previous Diaper was {{getDiaperType(diaper | async, yestdiaper | async)}} and was changed {{getPreviousDiaperTime(diaper | async, yestdiaper | async)}}
+            ago
+          </h2>
+        </ion-item>
+        <ion-item-options side="right">
+          <button ion-button color="primary">
+          <ion-icon name="text"> </ion-icon>
+          Pee
+        </button>
+          <button ion-button color="primary">
+          <ion-icon name="text"> </ion-icon>
+          Poop 
+        </button>
+          <button ion-button color="primary">
+          <ion-icon name="text"> </ion-icon>
+          Both
+        </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-card>
+  <!-- End Add Diaper Summary -->
+
+</ion-content>
+
+  <!--
   <ion-card color="danger">
     <ion-card-header>
       Today's Summary:
@@ -30,157 +196,4 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-
-  <ion-card color="primary">
-    <ion-card-header>
-      Feeding
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item-sliding>
-          <ion-item>
-            <h2 color="dark"> {{getLastFeedType(feeding | async)}} {{getLastFeedTime(feeding | async)}} ago</h2>
-          </ion-item>
-          <ion-item-options side="right">
-            <button ion-button color="primary" (click)="addPumpedFeeding()">
-            <ion-icon name="text"> </ion-icon>
-            Pumped 
-          </button>
-            <button ion-button color="primary" (click)="addFormulaFeeding()">
-            <ion-icon name="text"> </ion-icon>
-            Formula 
-          </button>
-            <button ion-button color="primary" (click)="addBreastFeeding()">
-          <ion-icon name="text"> </ion-icon>
-          Breastfed 
-        </button>
-          </ion-item-options>
-        </ion-item-sliding>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card *ngIf="showBreastfeeding || showPumpedFeeding || showFormulaFeeding">
-    <ion-card-content *ngIf="showBreastfeeding">
-      <ion-grid>
-        <ion-row>
-          <ion-col width-40>
-            <ion-item>
-              <ion-label> Time </ion-label>
-              <ion-datetime displayFormat="hh:mm A" [(ngModel)]="feedingtime"> </ion-datetime>
-            </ion-item>
-          </ion-col>
-          <ion-col width-40>
-            <ion-item>
-              <ion-label> Date </ion-label>
-              <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="date"> </ion-datetime>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      <ion-item>
-        <ion-label stacked> Duration </ion-label>
-        <ion-input type="number" [(ngModel)]="volume"> </ion-input>
-      </ion-item>
-    </ion-card-content>
-    <ion-card-content *ngIf="showPumpedFeeding || showFormulaFeeding">
-      <ion-grid>
-        <ion-row>
-          <ion-col width-40>
-            <ion-item>
-              <ion-label color="dark"> Time </ion-label>
-              <ion-datetime displayFormat="hh:mm A" [(ngModel)]="feedingtime"> </ion-datetime>
-            </ion-item>
-          </ion-col>
-          <ion-col width-40>
-            <ion-item>
-              <ion-label color="dark"> Date </ion-label>
-              <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="date"> </ion-datetime>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      <ion-item>
-        <ion-label stacked color="dark"> Volume (in ml) </ion-label>
-        <ion-input type="number" [(ngModel)]="volume"> </ion-input>
-      </ion-item>
-      <button ion-button block (click)="saveFed()" color="primary"> Save </button>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card color="secondary">
-    <ion-card-header>
-      Pumping
-    </ion-card-header>
-    <ion-list>
-      <ion-item-sliding>
-        <ion-item>
-          <h2 color="dark"> Pumped {{getLastPumpedTime(pumped | async)}} ago</h2>
-        </ion-item>
-        <ion-item-options side="right">
-          <button ion-button color="primary">
-          <ion-icon name="text"> </ion-icon>
-          Pumping 
-        </button>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-  </ion-card>
-
-  <ion-card *ngIf="showPumping">
-    <ion-card-header> Pumping </ion-card-header>
-    <ion-item>
-      <ion-label> Time </ion-label>
-      <ion-datetime displayFormat="hh:mm A" [(ngModel)]="feedingtime"> </ion-datetime>
-    </ion-item>
-    <ion-item>
-      <ion-label stacked> Volume </ion-label>
-      <ion-input type="number" [(ngModel)]="volume"> </ion-input>
-    </ion-item>
-    <button ion-button block (click)="savePumped()" color="secondary"> Save </button>
-  </ion-card>
-
-  <ion-card color="dark">
-    <ion-card-header>
-      Diaper
-    </ion-card-header>
-    <ion-list>
-      <ion-item-sliding>
-        <ion-item>
-          <h2 color="dark"> Pumped {{getLastPumpedTime(pumped | async)}} ago</h2>
-        </ion-item>
-        <ion-item-options side="right">
-          <button ion-button color="primary">
-          <ion-icon name="text"> </ion-icon>
-          Pee
-        </button>
-          <button ion-button color="primary">
-          <ion-icon name="text"> </ion-icon>
-          Poop 
-        </button>
-          <button ion-button color="primary">
-          <ion-icon name="text"> </ion-icon>
-          Both
-        </button>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-  </ion-card>
-
-  <ion-card *ngIf="showDiaper">
-    <ion-item>
-      <ion-item>
-        <ion-label> Time </ion-label>
-        <ion-datetime displayFormat="hh:mm A" [(ngModel)]="feedingtime"> </ion-datetime>
-      </ion-item>
-      <ion-label> Diaper Condition </ion-label>
-      <ion-select [(ngModel)]="diaperType">
-        <ion-option value="Pee"> Pee </ion-option>
-        <ion-option value="Poop"> Poop </ion-option>
-        <ion-option value="Pee"> Both </ion-option>
-      </ion-select>
-    </ion-item>
-    <button ion-button block (click)="saveDiaper()" color="dark"> Save </button>
-  </ion-card>
-
-</ion-content>
+-->

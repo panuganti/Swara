@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "cordova-plugin-camera": "registry:dt/cordova-plugin-camera#0.0.0+20160819210047"
+  }
+}

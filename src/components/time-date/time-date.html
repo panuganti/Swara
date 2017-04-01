@@ -1,0 +1,16 @@
+<ion-grid>
+  <ion-row>
+    <ion-col width-40>
+      <ion-item>
+        <ion-label color="primary"> When </ion-label>
+        <ion-datetime displayFormat="hh:mm A" [(ngModel)]="time" (ionChange)="update()"> </ion-datetime>
+      </ion-item>
+    </ion-col>
+    <ion-col width-40>
+      <ion-item>
+        <ion-label color="primary"> Date </ion-label>
+        <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="date" (ionChange)="update()"> </ion-datetime>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-grid>

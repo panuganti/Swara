@@ -2,15 +2,25 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
+// Import All Pages
 import { HomePage } from '../pages/home/home';
-import {IntroPage} from '../pages/intro/intro';
+import {ProfilesPage} from '../pages/profiles/profiles';
+import {LoginPage} from '../pages/login/login';
 
+// Import All Components
+import {BabyComponent} from '../components/baby/baby';
+import {TimeDateVolComponent} from '../components/time-date-vol/time-date-vol';
+import {TimeDateComponent} from '../components/time-date/time-date';
+import {DiaperComponent} from '../components/diaper/diaper';
 
 import {AngularFireModule} from 'angularfire2';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Camera } from '@ionic-native/camera';
 import {enableProdMode} from '@angular/core';
 enableProdMode();
+
+declare var Date;
 
 export const firebaseConfig = {
 };
@@ -19,7 +29,12 @@ export const firebaseConfig = {
   declarations: [
     MyApp,
     HomePage,
-    IntroPage
+    ProfilesPage,
+    TimeDateVolComponent,
+    TimeDateComponent,
+    DiaperComponent,
+    BabyComponent,
+    LoginPage
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -29,11 +44,17 @@ export const firebaseConfig = {
   entryComponents: [
     MyApp,
     HomePage,
-    IntroPage
+    ProfilesPage,
+    TimeDateVolComponent,
+    TimeDateComponent,
+    DiaperComponent,
+    BabyComponent,
+    LoginPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
+    Camera,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
