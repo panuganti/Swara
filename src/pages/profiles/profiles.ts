@@ -5,6 +5,7 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import * as Enumerable from 'linq';
 import { Baby } from '../../library/entities';
 import * as firebase from 'firebase';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @Component({
   selector: 'page-profiles',
@@ -22,7 +23,7 @@ export class ProfilesPage {
   showAddDialog: boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public af: AngularFire) { }
+    public af: AngularFire, public social: SocialSharing) { }
 
   getId(babies: any[]): string {
     var num = this.getCount(babies) + 1;;
@@ -35,16 +36,17 @@ export class ProfilesPage {
     this.babies = this.af.database.list('/Babies');
   }
 
-  deleteBaby(key, ev) {
+  deleteBaby(key, baby, ev) {
     console.log('deleting' + ev);
     console.log(key);
-    this.babies.remove(ev).then(() => console.log('deleted'));
-    if (key == '' || key == null) { console.log('wrong key'); return;}
+    if (key == '' || key == null) { console.log('wrong key'); return; }
     this.mybabies.remove(key).then(() => console.log('deleted from my babies')); // TODO: Also remove from shared..but, where is it stored ? 
-  }
-
-  share(ev: any) {
-    console.log('sharing with ' + ev.email + ' by ' + ev.id);
+    if (baby.admintype == 'creator') {
+      this.babies.remove(ev).then(() => console.log('deleted'));
+      this.af.database.list('/Feeding_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
+      this.af.database.list('/Pumping_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
+      this.af.database.list('/Diaper_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
+    }
   }
 
   logoutClicked() {
@@ -60,7 +62,24 @@ export class ProfilesPage {
     console.log(this.showAddDialog);
   }
 
-  // TODO: Share
+  share(ev: any) {
+    var partnerBabies: FirebaseListObservable<any>;
+    partnerBabies = this.af.database.list('/Babies' + '_' + this.sanitizeEmail(ev.email));
+    partnerBabies.push({
+      babyid: ev.id,
+      admintype: 'admin'
+    });
+    if (this.social.canShareViaEmail()) {
+      let user = firebase.auth().currentUser;
+      this.social.shareViaEmail('body', 'subject', ev.email, [user.email])
+        .then(() => { console.log('success') })
+        .catch((err) => { console.log(err) });
+    }
+    else {
+      console.log('Cannot share via email');
+    }
+    console.log('sharing with ' + ev.email + ' by ' + ev.id);
+  }
 
   addBaby(ev: any) {
     console.log('in add');

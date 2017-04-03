@@ -28,13 +28,10 @@
     <addbaby id="{{getId(babies | async)}}" (add)="addBaby($event)"> </addbaby>
   </ion-card>
 
-  <ion-list>
-    <ion-item-group>
-      <ion-item-divider> </ion-item-divider>
-    </ion-item-group>
-  </ion-list>
-  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, $event)" (show)="showBaby($event)" id="{{baby.babyid}}">
+  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)" (show)="showBaby($event)" id="{{baby.babyid}}">
   </baby>
+
+  
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="newBaby()"> 
       <ion-icon name="add"> </ion-icon>

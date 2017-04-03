@@ -18,12 +18,18 @@ import {AngularFireModule} from 'angularfire2';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Camera } from '@ionic-native/camera';
+import { SocialSharing} from '@ionic-native/social-sharing';
 import {enableProdMode} from '@angular/core';
 enableProdMode();
 
 declare var Date;
 
 export const firebaseConfig = {
+    apiKey: "AIzaSyChiLvTId7LOh97E1Zq_Ih8BzSKxdcu_uI",
+    authDomain: "panuganti-swara.firebaseapp.com",
+    databaseURL: "https://panuganti-swara.firebaseio.com",
+    storageBucket: "panuganti-swara.appspot.com",
+    messagingSenderId: "506431501481"
 };
 
 @NgModule({
@@ -58,6 +64,7 @@ export const firebaseConfig = {
     StatusBar,
     SplashScreen,
     Camera,
+    SocialSharing,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

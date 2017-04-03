@@ -206,6 +206,32 @@ export class HomePage {
     }
   }
 
+expandDiaperList: boolean = false;
+expandPumpingList: boolean = false;
+expandFeedingList: boolean = false;
+toggleFeeding() {
+  this.expandFeedingList = !this.expandFeedingList;
+}
+togglePumping() {
+  this.expandPumpingList = !this.expandPumpingList;
+}
+toggleDiapering() {
+  this.expandDiaperList = !this.expandDiaperList;
+}
+
+  getUnits(feed: any): string {
+    if (feed.type == 'breastfeeding') {
+      return 'mins';
+    }
+    else {
+      return 'ml';
+    }
+  }
+
+  editPumping(pump: any) {
+
+  }
+
   getDiaperType(diaper: Diaper[], yestdiaper: Diaper[]): string {
     if (diaper == null || (Enumerable.from(diaper).count() == 0)) {
       if (yestdiaper == null || (Enumerable.from(yestdiaper).count() == 0)) {
