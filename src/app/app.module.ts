@@ -12,6 +12,7 @@ import {BabyComponent} from '../components/baby/baby';
 import {TimeDateVolComponent} from '../components/time-date-vol/time-date-vol';
 import {TimeDateComponent} from '../components/time-date/time-date';
 import {DiaperComponent} from '../components/diaper/diaper';
+import { AddBabyComponent } from '../components/addbaby/addbaby';
 
 import {AngularFireModule} from 'angularfire2';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -34,7 +35,8 @@ export const firebaseConfig = {
     TimeDateComponent,
     DiaperComponent,
     BabyComponent,
-    LoginPage
+    LoginPage,
+    AddBabyComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -49,7 +51,8 @@ export const firebaseConfig = {
     TimeDateComponent,
     DiaperComponent,
     BabyComponent,
-    LoginPage
+    LoginPage,
+    AddBabyComponent
   ],
   providers: [
     StatusBar,

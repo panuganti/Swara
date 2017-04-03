@@ -8,12 +8,12 @@ baby {
         padding:1px 5px;
         text-align: center;
       }
-      .male {
-        background: rgba(0, 191, 255, 0.8);
+      .m {
+        border-left: rgba(0, 191, 255, 0.8);
         color: rgba(255, 255, 255, 0.8);        
       }
-      .female {
-        background: rgba(255, 20, 147, 0.8);
+      .f {
+        border-left: 5px solid rgba(255, 20, 147, 0.8);
         color: rgba(255, 255, 255, 0.8);
       }
 }

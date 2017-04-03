@@ -1,4 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import * as moment from 'moment';
+import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
 
 @Component({
   selector: 'baby',
@@ -6,17 +8,58 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class BabyComponent {
   @Input() id: string;
-  @Input() img: string;
-  @Input() name: string;
-  @Input() dob: string;
-  @Input() gender: string;
-  @Input() momsname: string;
-  @Output() babyclick: EventEmitter<string> = new EventEmitter<string>();
+  @Output() share: EventEmitter<any> = new EventEmitter<any>();
+  @Output() show: EventEmitter<string> = new EventEmitter<string>();
+  @Output() delete: EventEmitter<string> = new EventEmitter<string>();
 
-  constructor() {
+  showShareToolbar: boolean = false;
+  email: string;
+
+  baby: FirebaseObjectObservable<any>;
+
+  constructor(public af: AngularFire) {
   }
 
-  clicked() {
-    this.babyclick.emit(this.id);
+  deleteClicked() {
+    this.delete.emit(this.id);
+  }
+
+  showClicked() {
+    this.show.emit(this.id);
+  }
+
+  shareClicked() {
+    this.share.emit({id: this.id, email: this.email});
+    this.email = '';
+    this.showShareToolbar = false;
+  }
+
+  showShare() {
+    this.showShareToolbar = true;
+  }
+
+  ngOnInit() {
+    this.baby = this.af.database.object('/Babies/' + this.id);
+  }
+
+  getName(baby: any): string {
+    return baby.name;
+  }
+
+  getDob(baby: any): string {
+    return moment(baby.dob).format('MMM DD YYYY');
+  }
+
+  getGender(baby: any): string {
+    return baby.gender
+  }
+
+  getMomsName(baby: any): string {
+    return baby.momsname
+  }
+
+  getImgUrl(baby: any) : string {
+    if (baby.imgUrl == '' || baby.imgUrl == 'dummy') {return 'assets/resources/baby2.jpg';}
+    return baby.imgUrl;
   }
 }
