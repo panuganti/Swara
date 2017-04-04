@@ -32,7 +32,7 @@ export class LoginPage {
   }
 
   forgotpasswd() {
-    let promise = firebase.auth().sendPasswordResetEmail(this.email);
+    let promise = firebase.auth().sendPasswordResetEmail(this.email.trim());
     promise.then(() => {
       this.error = 'Please check your email for resetting your password';
       this.showError = true;
@@ -44,7 +44,7 @@ export class LoginPage {
 
   login() {
     this.showSpinnie = true;
-    let promise = this.af.auth.login({ email: this.email, password: this.password },
+    let promise = this.af.auth.login({ email: this.email.trim(), password: this.password },
       { provider: AuthProviders.Password, method: AuthMethods.Password });
     promise.catch((err: any) => {
       console.log(err);
@@ -55,8 +55,7 @@ export class LoginPage {
 
   signup() {
     this.showSpinnie = true;
-    let promise = this.af.auth.createUser({ email: this.email, password: this.password });
-    //    let promise = firebase.auth().createUserWithEmailAndPassword(this.email, this.password);
+    let promise = this.af.auth.createUser({ email: this.email.trim(), password: this.password });
     promise.catch((err: any) => {
       console.log(err);
       this.showSpinnie = false;
@@ -94,8 +93,6 @@ export class LoginPage {
     else {
       this.error = err.message;
     }
-
-
     this.showError = true;
   }
 }

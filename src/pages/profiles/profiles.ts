@@ -2,13 +2,11 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
-//import * as moment from 'moment';
 import * as Enumerable from 'linq';
 import { Baby } from '../../library/entities';
 import * as firebase from 'firebase';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-
-//declare var Camera;
+import { SocialSharing } from '@ionic-native/social-sharing';
+import {LoginPage} from '../login/login';
 
 @Component({
   selector: 'page-profiles',
@@ -23,105 +21,105 @@ export class ProfilesPage {
 
   mybabies: FirebaseListObservable<any>;
   babies: FirebaseListObservable<any>;
-  storage: any;
-  showAddDialog: boolean = true;
+  showAddDialog: boolean = false;
+  forceAddDialog: boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public af: AngularFire, private camera: Camera) { }
+    public af: AngularFire, public social: SocialSharing) { }
 
+  getId(babies: any[]): string {
+    var num = this.getCount(babies) + 1;;
+    return '' + num;
+  }
 
   ionViewDidLoad() {
     let user = firebase.auth().currentUser;
-    this.mybabies = this.af.database.list('/Babies' + '_' + user.email);
+    this.mybabies = this.af.database.list('/Babies' + '_' + this.sanitizeEmail(user.email));
     this.babies = this.af.database.list('/Babies');
   }
 
-  showBaby(ev: string) {
-    this.navCtrl.push(HomePage, { id: ev });
+  deleteBaby(key, baby, ev) {
+    console.log('deleting' + ev);
+    console.log(key);
+    if (key == '' || key == null) { console.log('wrong key'); return; }
+    this.mybabies.remove(key).then(() => console.log('deleted from my babies')); // TODO: Also remove from shared..but, where is it stored ? 
+    if (baby.admintype == 'creator') {
+      this.babies.remove(ev).then(() => console.log('deleted'));
+      this.af.database.list('/Feeding_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
+      this.af.database.list('/Pumping_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
+      this.af.database.list('/Diaper_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
+    }
+  }
+
+  logoutClicked() {
+    this.af.auth.logout();
+    this.navCtrl.setRoot(LoginPage);
+  }
+
+  showBaby(id: string) {
+    this.navCtrl.push(HomePage, { id: id });
   }
 
   newBaby() {
     this.showAddDialog = true;
-    console.log(this.showAddDialog);
+    this.forceAddDialog = true;
   }
 
-  // TODO: Share
+  share(ev: any) {
+    var partnerBabies: FirebaseListObservable<any>;
+    partnerBabies = this.af.database.list('/Babies' + '_' + this.sanitizeEmail(ev.email));
+    partnerBabies.push({
+      babyid: ev.id,
+      admintype: 'admin'
+    });
+    if (this.social.canShareViaEmail()) {
+      let user = firebase.auth().currentUser;
+      this.social.shareViaEmail('body', 'subject', ev.email, [user.email])
+        .then(() => { console.log('success') })
+        .catch((err) => { console.log(err) });
+    }
+    else {
+      console.log('Cannot share via email');
+    }
+    console.log('sharing with ' + ev.email + ' by ' + ev.id);
+  }
 
-  addBaby() {
+  addBaby(ev: any) {
+    console.log('in add');
     var baby: Baby = {
-      name: this.name,
-      dob: this.dob,
-      gender: this.gender,
-      momsname: this.momsname,
-      imgUrl: ''
+      name: ev.name,
+      dob: ev.dob,
+      gender: ev.gender,
+      momsname: ev.momsname,
+      imgUrl: ev.imgUrl
     }
     let babyRef = this.babies.push(baby);
-    this.mybabies.push({
+    var id = this.mybabies.push({
       babyid: babyRef.key,
       admintype: 'creator'
     });
+    this.showAddDialog = false;
+    this.forceAddDialog = false;
+    this.showBaby(id.key);
   }
 
   sanitizeEmail(email: string): string {
-    return '';
-  }
-
-  upload(ev: any) {
-    console.log(ev);
-    var files = ev.srcElement.files;
-    console.log(files);
-    this.storage = firebase.storage().ref();
-    var storageref = this.storage.child('images/pic.jpg');
-    var file = files[0];
-    var metadata = {
-      contentType: 'image/jpeg',
-    };
-    var uploadTask = storageref.put(file, metadata);
-    uploadTask.on('state_changed', (snapshot) => {
-      // Observe state change events such as progress, pause, and resume
-      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      console.log('Upload is ' + progress + '% done');
-      switch (snapshot.state) {
-        case firebase.storage.TaskState.PAUSED: // or 'paused'
-          console.log('Upload is paused');
-          break;
-        case firebase.storage.TaskState.RUNNING: // or 'running'
-          console.log('Upload is running');
-          break;
-      }
-    },
-      (error) => {
-        console.log(error);
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
-        switch (error.code) {
-          case 'storage/unauthorized':
-            // User doesn't have permission to access the object
-            break;
-
-          case 'storage/canceled':
-            // User canceled the upload
-            break;
-          case 'storage/unknown':
-            // Unknown error occurred, inspect error.serverResponse
-            break;
-        }
-      },
-      () => {
-        // When the image has successfully uploaded, we get its download URL
-        var downloadUrl = uploadTask.snapshot.downloadURL;
-        // Set the download URL to the message box, so that the user can send it to the database
-        ////textInput.value = downloadUrl;
-        console.log(downloadUrl);
-      });
-
+    email = email.trim();
+    email = email.replace(/\./g, "_");
+    email = email.replace(/\$/g, "_");
+    email = email.replace(/\[/g, "_");
+    email = email.replace(/\]/g, "_");
+    email = email.replace(/#/g, "_");
+    email = email.replace(/\//g, "_");
+    return email;
   }
 
   getCount(babies: Baby[]): number {
     if (babies == null || !Enumerable.from(babies).any()) {
+      this.showAddDialog = true;
       return 0;
     }
+      this.showAddDialog = false;
     return Enumerable.from(babies).count();
   }
 
@@ -130,21 +128,6 @@ export class ProfilesPage {
     console.log(Date.parse(this.dob));
     window.localStorage.setItem("dob", this.dob);
     this.navCtrl.push(HomePage);
-  }
-
-  getPicture() {
-    let coptions: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
-    };
-    this.camera.getPicture(coptions).then((data) => {
-      let image = "data:image/jpeg;base64," + data;
-      console.log(image);
-    })
-    .catch((err) => { console.log(err); })
-
   }
 
 }

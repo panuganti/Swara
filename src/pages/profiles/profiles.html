@@ -1,37 +1,34 @@
-<ion-header color="danger">
-  <ion-title style="text-align: center">
-    Your Babies
-  </ion-title>
+<ion-header>
+  <ion-navbar color="danger">
+    <ion-title style="text-align: center">
+      Your Babies
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="logoutClicked()" clear>
+              <ion-icon name="power" color="light"></ion-icon>   
+            </button>
+    </ion-buttons>
+  </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2 *ngIf="getCount(babies | async)==0"> Add your baby's profile to get started </h2>
-  <baby *ngFor="let baby of babies | async" (babyclick)="showBaby($event)" id={{baby.$key}} img="{{baby.img}}" name="{{baby.name}}"
-    dob="{{baby.dob}}" gender="{{baby.gender}}" momsname="{{baby.momsname}}"> </baby>
-  <ion-list *ngIf="showAddDialog">
-    <ion-item>
-      <ion-label stacked> Name </ion-label>
-      <ion-input type="text" [(ngModel)]="name"> </ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label stacked> Date of Birth </ion-label>
-      <ion-datetime [(ngModel)]="dob"> </ion-datetime>
-    </ion-item>
-    <ion-item>
-      <input type="file" (change)="upload($event)" />
-    </ion-item>
-    <button ion-button color="primary" (click)="addBaby()"> Create Baby's Profile </button>
-  </ion-list>
+  <ion-card *ngIf="getCount(mybabies | async, showAddDialog)==0">
+    <ion-card-header>
+      Add your baby's profile to get started
+    </ion-card-header>
+  </ion-card>
+  <ion-card *ngIf="showAddDialog || forceAddDialog">
+    <ion-card-header color="primary"> Enter Baby's Details</ion-card-header>
+    <addbaby id="{{getId(babies | async)}}" (add)="addBaby($event)"> </addbaby>
+  </ion-card>
+  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)" (show)="showBaby($event)"
+    id="{{baby.babyid}}">
+  </baby>
+
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="newBaby()"> 
       <ion-icon name="add"> </ion-icon>
     </button>
   </ion-fab>
 
-<!--
-  <div class="progress-container">
-    <progress class="progress" max="100" value="75">
-    </progress>
-  </div>
-  -->
 </ion-content>

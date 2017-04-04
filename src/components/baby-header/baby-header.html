@@ -1,0 +1,22 @@
+<ion-grid>
+  <ion-row>
+    <ion-col width-20>
+      <img class="max-height-50 max-width-50" src="{{img}}">
+    </ion-col>
+    <ion-col>
+      <ion-title style="text-align: center">
+        {{title}}
+      </ion-title>
+    </ion-col>
+    <ion-col width-25>
+      <ion-buttons end>
+        <button ion-button (click)="babies()" clear>
+            <ion-icon class="medium-icon" name="happy" color="light"> </ion-icon>
+      </button>
+        <button ion-button (click)="logoutClicked()" clear>
+            <ion-icon class="medium-icon" name="power" color="light"></ion-icon>   
+      </button>
+      </ion-buttons>
+    </ion-col>
+  </ion-row>
+</ion-grid>

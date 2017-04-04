@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { TimeVolType, TimeVol, Diaper } from '../../library/entities';
 import * as Enumerable from 'linq';
 import * as moment from 'moment';
-//import { LocalNotifications } from '@ionic-native/';
+import { ProfilesPage } from '../profiles/profiles';
+import { LocalNotifications } from '@ionic-native/local-notifications';
+import { LoginPage } from '../login/login';
 
 @Component({
   selector: 'page-home',
@@ -12,26 +14,15 @@ import * as moment from 'moment';
 })
 export class HomePage {
 
-  /* Page Params */
-  pageDate: string;
-  babyid: string;
-  /* Page Params */
-
-  /* Feeding */
-  showFeeding: boolean = false;
-  feedingType: string = '';
-  /* Feeding */
-
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, public af: AngularFire) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    public af: AngularFire, public localNotifications: LocalNotifications) {
   }
 
   ionViewDidLoad() {
     var id = this.navParams.get("id");
     this.babyid = id;
-    console.log('id:' + id);
+    this.baby = this.af.database.object('/Babies/' + this.babyid);
     this.pageDate = moment().format();
-    console.log(moment(this.pageDate).valueOf())
     this.resetLists();
   }
 
@@ -41,38 +32,28 @@ export class HomePage {
     this.feeding = this.af.database.list('/Feeding_' + this.babyid, { query: query });
     this.pumping = this.af.database.list('/Pumping_' + this.babyid, { query: query });
     this.diaper = this.af.database.list('/Diaper_' + this.babyid, { query: query });
-    this.yestfeeding =  this.af.database.list('/Feeding_' + this.babyid, { query: yestquery });
-    this.pumping = this.af.database.list('/Pumping_' + this.babyid, { query: yestquery });
-    this.diaper = this.af.database.list('/Diaper_' + this.babyid, { query: yestquery });
+    this.yestfeeding = this.af.database.list('/Feeding_' + this.babyid, { query: yestquery });
+    this.yestpumping = this.af.database.list('/Pumping_' + this.babyid, { query: yestquery });
+    this.yestdiaper = this.af.database.list('/Diaper_' + this.babyid, { query: yestquery });
   }
 
-  /* Date selector */
-  prevDate() {
-    if (!this.showNextDate) {
-      this.showNextDate = true;
-    }
-    this.pageDate = moment(this.pageDate).subtract(1, 'd').format();
+  getTitle(baby) {
+    return this.getName(baby) + ' (' + this.getAge(baby) + ' days old)';
+  }
+
+  logoutClicked() {
+    this.af.auth.logout();
+    this.navCtrl.setRoot(LoginPage);
+  }
+
+  setDate(ev) {
+    this.pageDate = ev;
     this.resetLists();
   }
-
-  showNextDate: boolean = false;
-  nextDate() {
-    var pageMoment = moment(this.pageDate);
-    var todayMoment = moment();
-    var diff = Math.ceil(moment.duration(pageMoment.diff(todayMoment)).asDays());
-    if (diff >= -1) {
-      this.showNextDate = false;
-    }
-    this.pageDate = moment(this.pageDate).add(1, 'd').format();
-    this.resetLists();
-  }
-  /* Date selector */
-
 
   getDate(d: string): string {
     var m = moment(d);
     var datestring = '' + m.year() + m.month() + m.day();
-    console.log(datestring);
     return datestring;
   }
 
@@ -81,58 +62,131 @@ export class HomePage {
     this.showFeeding = true;
     this.showPumping = false;
     this.showDiaper = false;
+    // set defaults
+    this.feedingDate = this.pageDate;
+    this.feedingVolume = 0;
+    this.editType = false;
   }
 
+  pumpingDate: string;
+  pumpingVolume: number;
   showPumpingDialog() {
     this.showFeeding = false;
     this.showPumping = true;
     this.showDiaper = false;
+    // set defaults
+    this.pumpingDate = this.pageDate;
+    this.pumpingVolume = 0;
+    this.editType = false;
   }
 
+  diaperDate: string;
+  diaperType: string;
   showDiaperDialog() {
     this.showFeeding = false;
     this.showPumping = false;
     this.showDiaper = true;
+    // set defaults
+    this.diaperDate = this.pageDate;
+    this.diaperType = 'both';
+    this.editType = false;
   }
 
-  saveFeeding(ev: TimeVol, type: string) {
+  feedingDate: string;
+  feedingVolume: number;
+  editType: boolean = false;
+  key: string;
+  editFeeding(feed) {
+    this.feedingDate = feed.date;
+    this.feedingVolume = feed.volume;
+    this.editType = true;
+    this.key = feed.$key;
+  }
+
+  setAlarm(type: string) {
+    console.log('todo: set alarm');
+    this.localNotifications.schedule({
+      id: 1, text: 'testing', at: new Date(new Date().getTime() + 100), led: 'FF0000', icon: '', title: 'Notification test'
+    });
+  }
+
+  formatTime(time: string): string {
+    console.log(time);
+    return moment(time).format('HH:mm a')
+  }
+
+  editDiapering(diaper) {
+    this.diaperDate = diaper.date;
+    this.diaperType = diaper.type;
+    this.editType = true;
+    this.key = diaper.$key;
+  }
+
+  editPumping(pump: any) {
+    this.pumpingDate = pump.date;
+    this.pumpingVolume = pump.volume;
+    this.editType = true;
+    this.key = pump.$key;
+  }
+
+
+  saveFeeding(ev: TimeVol, type: string, edit: boolean, key: string) {
     var item = {
       time: ev.time,
       date: this.getDate(ev.date),
       volume: ev.volume,
       type: type
     };
-    console.log(item);
-    this.feeding.push(item);
+    if (edit) {
+      // update
+      this.feeding.update("", item);
+    }
+    else {
+      this.feeding.push(item);
+    }
     this.showFeeding = false;
   }
 
-  saveDiaper(ev: Diaper) {
-    this.diaper.push({
+  saveDiaper(ev: Diaper, edit: boolean, key: string) {
+    var item = {
       type: ev.type,
       date: this.getDate(ev.date),
       time: ev.time
-    });
+    }
+    if (edit) {
+      this.diaper.update(key, item);
+    }
+    else {
+      this.diaper.push(item);
+    }
     this.showDiaper = false;
   }
 
-  savePumping(ev: TimeVol) {
-    this.pumping.push({
+  savePumping(ev: TimeVol, edit: boolean, key: string) {
+    var item = {
       time: ev.time,
       date: this.getDate(ev.date),
       volume: ev.volume
-    });
+    };
+    if (edit) {
+      this.pumping.update(key, item);
+    }
+    else {
+      this.pumping.push(item);
+    }
     this.showPumping = false;
   }
 
   //#endregion Feeding
 
-  getName(): string {
-    return window.localStorage.getItem("name");
+  getName(baby: any): string {
+    if (baby == null) { return ''; }
+    return baby.name;
   }
 
-  getAge(): number {
-    var dob: string = window.localStorage.getItem("dob");
+  getAge(baby: any): number {
+    if (baby == null) { return 0; }
+    var dob = baby.dob;
     var now = moment(Date.now());
     var dobMoment = moment(dob);
     var duration = moment.duration(now.diff(dobMoment));
@@ -143,62 +197,141 @@ export class HomePage {
   // #region Summary
   getLastFeedType(feeding: TimeVolType[], yestfeeding: TimeVolType[]): string {
     if ((feeding != null) && (Enumerable.from(feeding).count() > 0)) {
+      this.showNoFeedingText = false;
       var lastelement = Enumerable.from(feeding).orderByDescending(f => moment(f.time).valueOf()).first();
-      return lastelement.type;
+      var type = lastelement.type;
+      switch (type) {
+        case 'pumped': return 'Pumped ' + lastelement.volume + ' ml ';
+        case 'breastfeeding': return 'Breast-fed for ' + lastelement.volume + ' mins ';
+        case 'formula': return 'Fed formula ' + lastelement.volume + ' ml ';
+        default: return '';
+      }
     }
-    return 'Random';
+    return '';
   }
 
+  showNoFeedingText: boolean = false;
   getLastFeedTime(feeding: TimeVolType[], yestfeeding: TimeVolType[]): string {
-    if ((feeding != null) && (Enumerable.from(feeding).count() > 0)) {
+    if (feeding == null || (Enumerable.from(feeding).count() == 0)) {
+      if (yestfeeding == null || (Enumerable.from(yestfeeding).count() == 0)) {
+        this.showNoFeedingText = true;
+        return '';
+      }
+      else {
+        this.showNoFeedingText = false;
+        var lastelement = Enumerable.from(yestfeeding).orderByDescending(f => moment(f.time).valueOf()).first();
+        return this.getTimeInHoursAndMins(lastelement.time);
+      }
+    }
+    else {
+      this.showNoFeedingText = false;
       var lastelement = Enumerable.from(feeding).orderByDescending(f => moment(f.time).valueOf()).first();
-      return lastelement.time;
+      return this.getTimeInHoursAndMins(lastelement.time);
     }
   }
 
+  getTimeInHoursAndMins(time: string): string {
+    var d = moment.duration(moment().diff(moment(time)));
+    var h = Math.floor(d.asHours());
+    var m = Math.floor(d.asMinutes() - h * 60);
+    if (h == 0) { return '' + m + ' mins ago'; }
+    return '' + h + ' hrs and ' + m + ' mins ago';
+  }
+
+  showBabies() {
+    console.log('in show babies');
+    this.navCtrl.push(ProfilesPage); // TODO: Make it modal
+  }
+
+  showNoPumpingText: boolean = true;
   getLastPumpedTime(pumping: TimeVolType[], yestpumping: TimeVolType[]): string {
-    return '1 hrs 20 mins';
+    if (pumping == null || (Enumerable.from(pumping).count() == 0)) {
+      if (yestpumping == null || (Enumerable.from(yestpumping).count() == 0)) {
+        this.showNoPumpingText = true;
+      }
+      else {
+        this.showNoPumpingText = false;
+        var lastelement = Enumerable.from(yestpumping).orderByDescending(f => moment(f.time).valueOf()).first();
+        return 'Pumped ' + this.getTimeInHoursAndMins(lastelement.time);
+      }
+    }
+    else {
+      this.showNoPumpingText = false;
+      var lastelement = Enumerable.from(pumping).orderByDescending(f => moment(f.time).valueOf()).first();
+      return 'Pumped ' + this.getTimeInHoursAndMins(lastelement.time);
+    }
+  }
+
+  toggleFeeding() {
+    this.expandFeedingList = !this.expandFeedingList;
+  }
+  togglePumping() {
+    this.expandPumpingList = !this.expandPumpingList;
+  }
+  toggleDiapering() {
+    this.expandDiaperList = !this.expandDiaperList;
+  }
+
+  getUnits(feed: any): string {
+    if (feed.type == 'breastfeeding') {
+      return 'mins';
+    }
+    else {
+      return 'ml';
+    }
   }
 
   getDiaperType(diaper: Diaper[], yestdiaper: Diaper[]): string {
-    return 'Wet';
+    if (diaper == null || (Enumerable.from(diaper).count() == 0)) {
+      if (yestdiaper == null || (Enumerable.from(yestdiaper).count() == 0)) {
+        this.showNoDiaperText = true;
+      }
+      else {
+        this.showNoDiaperText = false;
+        var lastelement = Enumerable.from(yestdiaper).orderByDescending(f => moment(f.time).valueOf()).first();
+        return 'Previous Diaper was ' + lastelement.type;
+      }
+    }
+    else {
+      this.showNoDiaperText = false;
+      var lastelement = Enumerable.from(diaper).orderByDescending(f => moment(f.time).valueOf()).first();
+      return 'Previous Diaper was ' + lastelement.type;
+    }
   }
 
   getPreviousDiaperTime(diaper: Diaper[], yestdiaper: Diaper[]) {
-    return '1 hr 40 mins';
+    if (diaper == null || (Enumerable.from(diaper).count() == 0)) {
+      if (yestdiaper == null || (Enumerable.from(yestdiaper).count() == 0)) {
+        this.showNoDiaperText = true;
+      }
+      else {
+        this.showNoDiaperText = false;
+        var lastelement = Enumerable.from(yestdiaper).orderByDescending(f => moment(f.time).valueOf()).first();
+        return ' and was changed ' + this.getTimeInHoursAndMins(lastelement.time);
+      }
+    }
+    else {
+      this.showNoDiaperText = false;
+      var lastelement = Enumerable.from(diaper).orderByDescending(f => moment(f.time).valueOf()).first();
+      return ' and was changed ' + this.getTimeInHoursAndMins(lastelement.time);
+    }
   }
 
-  getCount(feeding: TimeVolType[], yestfeeding: TimeVolType[]): number {
-    return Enumerable.from(feeding).count();
-  }
-
-  getVolume(feeding: TimeVolType[], yestfeeding: TimeVolType[]): number {
-    return Enumerable.from(feeding).sum(f => f.volume);
-  }
-
-  getFeedingSummary(feeding: TimeVolType[], yestfeeding: TimeVolType[]): string {
-    if (feeding == null) { return ''; }
-    //    var totalMins = Math.floor((Enumerable.from(feeding).max(f => Date.now() - f.time)) / (1000 * 60));
-    //    var hrs = Math.floor(totalMins / 60); var mins = Math.floor(totalMins - hrs * 60);
-    return '' + 'hrs and ' + 'mins ago';
-
-  }
-
-  getDiaperSummary(diaper: Diaper[], yestdiaper: Diaper[]) {
-    if (diaper == null) { return ''; }
-    //    var out = Math.floor(Enumerable.from(feeding).max(f => Date.now() - new Date(f.time)) / (1000 * 60));
-    //  var hrs = Math.floor(out / 60); var mins = Math.floor(out - hrs * 60);
-    return '' + 'hrs and ' + 'mins ago';
-  }
   // #endregion Summary
 
   //#region variables
+  expandDiaperList: boolean = false;
+  expandPumpingList: boolean = false;
+  expandFeedingList: boolean = false;
+
+  showNoDiaperText: boolean = true;
   feeding: FirebaseListObservable<any>;
   pumping: FirebaseListObservable<any>;
   diaper: FirebaseListObservable<any>;
   yestfeeding: FirebaseListObservable<any>;
   yestpumping: FirebaseListObservable<any>;
   yestdiaper: FirebaseListObservable<any>;
+  baby: FirebaseObjectObservable<any>;
 
   feedingTitle: string;
   feedingText: string;
@@ -215,19 +348,10 @@ export class HomePage {
   showBreastfeeding: boolean = false;
 
   feedingtime: string;
+  pageDate: string;
+  babyid: string;
+  showFeeding: boolean = false;
+  feedingType: string = '';
   //#endregion variables
-
-  /*
-  // Schedule delayed notification 
-  scheduleAlarm() {
-  LocalNotifications.schedule({
-     text: 'Alarm has expired!',
-     at: new Date(new Date().getTime() + 3600),
-     sound: isAndroid ? 'file://sound.mp3': 'file://beep.caf',
-     data: { message : 'json containing app-specific information to be posted when alarm triggers' }
-  });
-  }
-  */
-
 
 }

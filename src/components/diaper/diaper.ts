@@ -13,6 +13,7 @@ export class DiaperComponent {
   disabled: boolean = true;
 
   @Input() defaultDate: string;
+  @Input() defaultType: string;
   @Output() save: EventEmitter<Diaper> = new EventEmitter<Diaper>();
 
 
@@ -21,7 +22,7 @@ export class DiaperComponent {
 
   ngOnInit() {
     this.inputDate = this.defaultDate;
-    console.log(this.inputDate);
+    this.type = this.defaultType;
     this.time = this.defaultDate;
     this.date = this.defaultDate;
   }
