@@ -6,6 +6,7 @@ import * as Enumerable from 'linq';
 import { Baby } from '../../library/entities';
 import * as firebase from 'firebase';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import {LoginPage} from '../login/login';
 
 @Component({
   selector: 'page-profiles',
@@ -21,6 +22,7 @@ export class ProfilesPage {
   mybabies: FirebaseListObservable<any>;
   babies: FirebaseListObservable<any>;
   showAddDialog: boolean = false;
+  forceAddDialog: boolean = false;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public af: AngularFire, public social: SocialSharing) { }
@@ -51,6 +53,7 @@ export class ProfilesPage {
 
   logoutClicked() {
     this.af.auth.logout();
+    this.navCtrl.setRoot(LoginPage);
   }
 
   showBaby(id: string) {
@@ -59,7 +62,7 @@ export class ProfilesPage {
 
   newBaby() {
     this.showAddDialog = true;
-    console.log(this.showAddDialog);
+    this.forceAddDialog = true;
   }
 
   share(ev: any) {
@@ -96,6 +99,7 @@ export class ProfilesPage {
       admintype: 'creator'
     });
     this.showAddDialog = false;
+    this.forceAddDialog = false;
     this.showBaby(id.key);
   }
 
@@ -112,8 +116,10 @@ export class ProfilesPage {
 
   getCount(babies: Baby[]): number {
     if (babies == null || !Enumerable.from(babies).any()) {
+      this.showAddDialog = true;
       return 0;
     }
+      this.showAddDialog = false;
     return Enumerable.from(babies).count();
   }
 

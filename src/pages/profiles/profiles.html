@@ -1,37 +1,30 @@
 <ion-header>
   <ion-navbar color="danger">
-    <ion-grid>
-      <ion-row>
-        <ion-col width-80>
-          <ion-title style="text-align: center">
-            Your Babies
-          </ion-title>
-        </ion-col>
-        <ion-col width-20>
-          <button ion-button (click)="logoutClicked()" clear>
+    <ion-title style="text-align: center">
+      Your Babies
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="logoutClicked()" clear>
               <ion-icon name="power" color="light"></ion-icon>   
             </button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-card *ngIf="getCount(babies | async)==0">
+  <ion-card *ngIf="getCount(mybabies | async, showAddDialog)==0">
     <ion-card-header>
       Add your baby's profile to get started
     </ion-card-header>
   </ion-card>
-  <ion-card *ngIf="showAddDialog">
+  <ion-card *ngIf="showAddDialog || forceAddDialog">
     <ion-card-header color="primary"> Enter Baby's Details</ion-card-header>
     <addbaby id="{{getId(babies | async)}}" (add)="addBaby($event)"> </addbaby>
   </ion-card>
-
-  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)" (show)="showBaby($event)" id="{{baby.babyid}}">
+  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)" (show)="showBaby($event)"
+    id="{{baby.babyid}}">
   </baby>
 
-  
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="newBaby()"> 
       <ion-icon name="add"> </ion-icon>

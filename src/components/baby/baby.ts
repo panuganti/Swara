@@ -43,23 +43,27 @@ export class BabyComponent {
   }
 
   getName(baby: any): string {
+    if (baby == null) {return '';}
     return baby.name;
   }
 
   getDob(baby: any): string {
+    if (baby == null) {return '';}
     return moment(baby.dob).format('MMM DD YYYY');
   }
 
   getGender(baby: any): string {
+    if (baby == null) {return 'u';}
     return baby.gender
   }
 
   getMomsName(baby: any): string {
+    if (baby == null) {return '';}
     return baby.momsname
   }
 
   getImgUrl(baby: any) : string {
-    if (baby.imgUrl == '' || baby.imgUrl == 'dummy') {return 'assets/resources/baby2.jpg';}
+    if (baby == null || baby.imgUrl == '' || baby.imgUrl == 'dummy') {return 'assets/resources/baby2.jpg';}
     return baby.imgUrl;
   }
 }
