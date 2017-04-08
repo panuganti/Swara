@@ -1,14 +1,158 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
+  <ion-navbar hideBackButton color="danger">
+    <baby-header title="{{getTitle(baby | async)}}" showBabies="showBabies()" (logout)="logoutClicked()"> </baby-header>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content>
+  <date-selector (date)="setDate($event)"> </date-selector>
+  <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" 
+  (diapering)="showDiaperDialog()"> 
+  </event-selector>
+
+  <ion-card *ngIf="showAlarmCard"> 
+    <ion-content> 
+      <time-date defaultDate="{{alarmTime}}"> </time-date>
+      <ion-item> 
+        <ion-textarea [(ngModel)]="alarmNote" rows=2> </ion-textarea>
+      </ion-item>
+      <button ion-button (click)=""> </button>
+    </ion-content>
+  </ion-card>
+
+  <!-- Begin Add Feeding Record -->
+  <ion-card *ngIf="showFeeding">
+    <ion-card-header> Feeding </ion-card-header>
+    <ion-list>
+      <ion-item>
+        <ion-label color="primary">Feeding Type</ion-label>
+        <ion-select [(ngModel)]="feedingType">
+          <ion-option value="breastfeeding">Breast Feeding</ion-option>
+          <ion-option value="pumped">Pumped Breast Milk</ion-option>
+          <ion-option value="formula">Formula</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+    <ion-card-content *ngIf="feedingType == 'breastfeeding'">
+      <time-date-vol volumelabel="Duration (in mins)" defaultDate="{{feedingDate}}" defaultVolume="{{feedingVolume}}" (save)="saveFeeding($event,'breastfeeding', editType, key)"></time-date-vol>
+    </ion-card-content>
+    <ion-card-content *ngIf="feedingType == 'pumped'">
+      <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{feedingDate}}" defaultVolume="{[feedingVolume}}" (save)="saveFeeding($event,'pumped', editType, key)"></time-date-vol>
+    </ion-card-content>
+    <ion-card-content *ngIf="feedingType == 'formula'">
+      <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{feedingDate}}" defaultVolume="{{feedingVolume}}" (save)="saveFeeding($event,'formula', editType, key)"></time-date-vol>
+    </ion-card-content>
+  </ion-card>
+  <!-- End Add Feeding Record -->
+
+  <!-- Begin Add Pumping Record -->
+  <ion-card *ngIf="showPumping">
+    <ion-card-header> Pumping </ion-card-header>
+    <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{pumpingDate}}" defaultVolume="{{pumpingVolume}}" (save)="savePumping($event, editType, key)"></time-date-vol>
+  </ion-card>
+  <!-- End Add Pumping Record -->
+
+  <!-- Begin Add Diaper Record -->
+  <ion-card *ngIf="showDiaper">
+    <diaper defaultDate="{{diaperDate}}" defaultType="{{diaperType}}" (save)="saveDiaper($event, editType, key)"> </diaper>
+  </ion-card>
+  <!-- End Add Diaper Record -->
+
+  <!-- Begin  Feeding Summary -->
+  <ion-card color="primary">
+    <ion-card-header>
+      Feeding
+    </ion-card-header>
+    <ion-list>
+      <ion-item (click)="toggleFeeding()">
+        <ion-grid>
+          <ion-row>
+            <ion-col width-80>
+              <h2 ion-text color="dark"> {{getLastFeedType(feeding | async, yestfeeding | async)}} {{getLastFeedTime(feeding | async, yestfeeding |
+                async)}}
+              </h2>
+              <h2 ion-text *ngIf="showNoFeedingText" color="dark"> Add Feeding record to get started </h2>
+            </ion-col>
+            <ion-col width-20>
+              <button ion-item icon-only (click)="showAlarm('feeding')"> 
+                <ion-icon name="alarm"> </ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+    <ion-list *ngIf="expandFeedingList">
+      <ion-item *ngFor="let feed of feeding | async" (click)="editFeeding(feed)">
+        <hr>
+        <h2 color="dark"> {{feed.type}} {{feed.volume}} {{getUnits(feed)}} at {{formatTime(feed.time)}} </h2>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+  <!-- End Feeding Summary -->
+
+  <!-- Begin Pumping Summary -->
+  <ion-card color="secondary">
+    <ion-card-header>
+      Pumping
+    </ion-card-header>
+    <ion-list>
+      <ion-item (click)="togglePumping()">
+        <ion-grid>
+          <ion-row>
+            <ion-col width-80>
+              <h2 ion-text color="dark"> {{getLastPumpedTime(pumping | async, yestpumping | async)}} </h2>
+              <h2 ion-text *ngIf="showNoPumpingText" color="dark"> Add Pumping record to get started </h2>
+            </ion-col>
+            <ion-col width-20>
+              <button ion-item icon-only (click)="setAlarm('pumping')"> 
+                <ion-icon name="alarm"> </ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+    <ion-list *ngIf="expandPumpingList">
+      <ion-item *ngFor="let pump of pumping | async" (click)="editPumping(pump)">
+        <hr>
+        <h2 color="dark"> Pumped {{pump.volume}} at {{formatTime(pump.time)}} </h2>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+  <!-- End Pumping Summary -->
+
+  <!-- Begin Diaper Summary -->
+  <ion-card color="dark">
+    <ion-card-header>
+      Diaper
+    </ion-card-header>
+    <ion-list>
+      <ion-item (click)="toggleDiapering()">
+        <ion-grid>
+          <ion-row>
+            <ion-col width-80>
+              <h2 ion-text color="dark"> {{getDiaperType(diaper | async, yestdiaper | async)}} {{getPreviousDiaperTime(diaper | async, yestdiaper |
+                async)}}
+              </h2>
+              <h2 ion-text *ngIf="showNoDiaperText" color="dark"> Add Diaper record to get started </h2>
+            </ion-col>
+            <ion-col width-20>
+              <button ion-item icon-only (click)="setAlarm('diaper')"> 
+                <ion-icon name="alarm"> </ion-icon>
+              </button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-list *ngIf="expandDiaperList">
+        <ion-item *ngFor="let diap of diaper | async" (click)="editDiapering(diap)">
+          <hr>
+          <h2 color="dark"> Diaper was {{diap.type}} at {{formatTime(diap.time)}} </h2>
+        </ion-item>
+      </ion-list>
+    </ion-list>
+  </ion-card>
+  <!-- End Diaper Summary -->
+
 </ion-content>

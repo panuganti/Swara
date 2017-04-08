@@ -1,0 +1,6 @@
+<time-date defaultDate="{{inputDate}}" (timedate)="updatetimedate($event)"> </time-date>
+<ion-item>
+  <ion-label floating color="primary">{{volumelabel}} </ion-label>
+  <ion-input type="number" [(ngModel)]="volume"> </ion-input>
+</ion-item>
+<button ion-button block [disabled]="time==null || date==null || volume==0 || volume==null" (click)="saveClicked()" color="primary"> Save </button>

@@ -1,0 +1,40 @@
+<ion-card class="{{getGender(baby | async)}}">
+  <ion-card-header>
+    <ion-grid>
+      <ion-row>
+        <ion-col width-30>
+          <ion-item (click)="showClicked()">
+            <ion-avatar item-left>
+              <img src="{{getImgUrl(baby | async)}}">
+            </ion-avatar>
+            <h3>{{getName(baby | async)}}</h3>
+            <p><small>{{getDob(baby | async)}}</small></p>
+          </ion-item>
+        </ion-col>
+        <ion-col width-40>
+          <ion-buttons right>
+            <button ion-button icon-only clear (click)="showShare()"> 
+              <ion-icon name="share"> </ion-icon>
+            </button>
+            <button ion-button icon-only  clear (click)="deleteClicked()"> 
+              <ion-icon name="trash"> </ion-icon>
+            </button>
+          </ion-buttons>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-toolbar *ngIf="showShareToolbar">
+      <ion-item>
+        <ion-label style="margin:0px;"></ion-label>
+        <ion-input type="text" placeholder="Email" class="chatbar" [(ngModel)]="email"> </ion-input>
+      </ion-item>
+      <ion-buttons right>
+        <button ion-button icon-only style="min-width:45px;" (click)="shareClicked()">
+        <ion-icon name="send"></ion-icon>
+      </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-card-content>
+</ion-card>

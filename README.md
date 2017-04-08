@@ -1,2 +1,1 @@
-# Swara
-Website for my daughter Swara
+# Baby Tracker

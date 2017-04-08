@@ -1,0 +1,47 @@
+<ion-list>
+  <ion-item>
+    <ion-label floating> Name </ion-label>
+    <ion-input type="text" [(ngModel)]="name" (change)="enableAddButton()"> </ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating> Date of Birth </ion-label>
+    <ion-datetime [(ngModel)]="dob" displayFormat="MMM DD YYYY" (change)="enableAddButton()"> </ion-datetime>
+  </ion-item>
+  <ion-item>
+    <ion-grid>
+      <ion-row>
+        <ion-col width-50>
+          <button ion-button block (click)="setGender('m')" icon-left [color]="maleColor" (ionChange)="enableAddButton()"> 
+            <ion-icon name="man"> </ion-icon>
+          </button>
+        </ion-col>
+        <ion-col width-50>
+          <button ion-button block (click)="setGender('f')" icon-left [color]="femaleColor" (ionChange)="enableAddButton()">
+          <ion-icon name="woman"> </ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+  <ion-item>
+    <ion-label floating> Mama's Name </ion-label>
+    <ion-input type="text" [(ngModel)]="momsname" (change)="enableAddButton()"> </ion-input>
+  </ion-item>
+  <ion-item class="item-profile">
+    <ion-avatar style="text-align: center" *ngIf="!showImg">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-icon class="big-font" name="ios-camera-outline" (click)="getFromCamera()"> </ion-icon>
+          </ion-col>
+          <ion-col>
+            <ion-icon class="big-font" name="images" (click)="getFromGallery()"> </ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-avatar>
+    <img *ngIf="showImg" class="preview" src="{{image}}">
+  </ion-item>
+  <progress *ngIf="showProgressBar" value="{{progress}}" max="100"></progress>
+  <button ion-button full color="primary" (click)="clicked()" [disabled]="!addbuttonenabled"> Create Baby's Profile </button>
+</ion-list>

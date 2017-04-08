@@ -1,0 +1,19 @@
+<ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col width-25>
+        <ion-item>
+          <button ion-button clear item-left icon-left (click)="prevDate()">  <ion-icon name="arrow-back"></ion-icon> </button>
+        </ion-item>
+      </ion-col>
+      <ion-col width-50>
+        <ion-datetime displayFormat="MMM DD YYYY" [(ngModel)]="componentDate"> </ion-datetime>
+      </ion-col>
+      <ion-col width-25>
+        <ion-item *ngIf="showNextDate">
+          <button ion-button clear item-left icon-right (click)="nextDate()">  <ion-icon name="arrow-forward"></ion-icon> </button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>
