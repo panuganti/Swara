@@ -1,8 +1,7 @@
 import { Input, Output, EventEmitter, Component } from '@angular/core';
-import { Camera, CameraOptions } from '@ionic-native/camera';
+import { Camera} from '@ionic-native/camera';
 import * as moment from 'moment';
 import {LoadingController, Loading} from 'ionic-angular';
-import * as firebase from 'firebase';
 import {AngularFire} from 'angularfire2';
 
 @Component({

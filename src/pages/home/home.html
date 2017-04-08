@@ -10,6 +10,16 @@
   (diapering)="showDiaperDialog()"> 
   </event-selector>
 
+  <ion-card *ngIf="showAlarmCard"> 
+    <ion-content> 
+      <time-date defaultDate="{{alarmTime}}"> </time-date>
+      <ion-item> 
+        <ion-textarea [(ngModel)]="alarmNote" rows=2> </ion-textarea>
+      </ion-item>
+      <button ion-button (click)=""> </button>
+    </ion-content>
+  </ion-card>
+
   <!-- Begin Add Feeding Record -->
   <ion-card *ngIf="showFeeding">
     <ion-card-header> Feeding </ion-card-header>
@@ -64,9 +74,9 @@
               <h2 ion-text *ngIf="showNoFeedingText" color="dark"> Add Feeding record to get started </h2>
             </ion-col>
             <ion-col width-20>
-              <button ion-item icon-only (click)="setAlarm('feeding')"> 
+              <button ion-item icon-only (click)="showAlarm('feeding')"> 
                 <ion-icon name="alarm"> </ion-icon>
-          </button>
+              </button>
             </ion-col>
           </ion-row>
         </ion-grid>

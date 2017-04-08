@@ -103,11 +103,21 @@ export class HomePage {
     this.key = feed.$key;
   }
 
+  showAlarm(type) {
+    this.showAlarmCard = true;
+    this.alarmTime = moment().add(3,'h').format();
+    this.alarmNote = '';
+  }
+
+  showAlarmCard: boolean = false;
+  alarmTime: string;
+  alarmNote: string;
   setAlarm(type: string) {
-    console.log('todo: set alarm');
     this.localNotifications.schedule({
-      id: 1, text: 'testing', at: new Date(new Date().getTime() + 100), led: 'FF0000', icon: '', title: 'Notification test'
+      id: 1, text: this.alarmNote, at: new Date(this.alarmTime), 
+      led: 'FF0000', title: type
     });
+    this.showAlarmCard = true;
   }
 
   formatTime(time: string): string {
