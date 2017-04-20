@@ -1,1 +1,19 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="content">
+  <ion-content class="menu-left">
+    <div padding class="menu-left menu-bg">
+      <a menuClose>
+        <img class="profile-picture" src="https://lorempixel.com/400/400/people/3">
+        <h4 ion-text color="light" style="text-align: center">Anonymous</h4>
+      </a>
+    </div>
+
+    <ion-list>
+      <button ion-item menuClose *ngFor="let page of pages" (click)="openPage(page)">
+        <ion-icon item-left name="{{ page.icon }}"></ion-icon>
+        {{ page.title }}
+        <ion-badge color="danger" item-right *ngIf="page.count">{{ page.count }}</ion-badge>
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
