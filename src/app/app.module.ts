@@ -1,4 +1,4 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler, enableProdMode } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
@@ -16,14 +16,17 @@ import { AddBabyComponent } from '../components/addbaby/addbaby';
 import {BabyHeaderComponent} from '../components/baby-header/baby-header';
 import { DateSelectorComponent } from '../components/date-selector/date-selector';
 import { EventSelectorComponent } from '../components/event-selector/event-selector';
+import { CodePushComponent } from '../components/code-push/code-push';
 
 import {AngularFireModule} from 'angularfire2';
+// Import Ionic Native
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Camera } from '@ionic-native/camera';
 import { SocialSharing} from '@ionic-native/social-sharing';
-import {enableProdMode} from '@angular/core';
+import { CodePush } from '@ionic-native/code-push';
 import { LocalNotifications} from '@ionic-native/local-notifications'
+
 enableProdMode();
 
 declare var Date;
@@ -44,7 +47,8 @@ export const firebaseConfig = {
     AddBabyComponent,
     BabyHeaderComponent,
     DateSelectorComponent,
-    EventSelectorComponent
+    EventSelectorComponent,
+    CodePushComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -63,7 +67,8 @@ export const firebaseConfig = {
     LoginPage,
     AddBabyComponent,
     DateSelectorComponent,
-    EventSelectorComponent
+    EventSelectorComponent,
+    CodePushComponent
   ],
   providers: [
     StatusBar,
@@ -71,6 +76,7 @@ export const firebaseConfig = {
     Camera,
     SocialSharing,
     LocalNotifications,
+    CodePush,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
