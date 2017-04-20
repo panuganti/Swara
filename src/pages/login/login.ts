@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { FirebaseListObservable, AngularFire, AuthProviders, AuthMethods } from 'angularfire2';
-import { ProfilesPage } from '../profiles/profiles';
 import * as firebase from 'firebase';
 
 @Component({
@@ -17,11 +16,12 @@ export class LoginPage {
   showSpinnie: boolean = false;
   showError: boolean = false;
   showForgotPasswd: boolean = false;
+  signDisabled: boolean = false;
 
   constructor(public navCtrl: NavController, public af: AngularFire) {
   }
 
-  ionViewDidLoad() {}
+  ionViewDidLoad() { }
 
   forgotpasswd() {
     let promise = firebase.auth().sendPasswordResetEmail(this.email.trim());
@@ -36,9 +36,11 @@ export class LoginPage {
 
   login() {
     this.showSpinnie = true;
+    this.signDisabled = true;
     let promise = this.af.auth.login({ email: this.email.trim(), password: this.password },
       { provider: AuthProviders.Password, method: AuthMethods.Password });
     promise.catch((err: any) => {
+      this.signDisabled = false;
       console.log(err);
       this.showSpinnie = false;
       this.handleAuthError(err, 'login');
@@ -49,6 +51,7 @@ export class LoginPage {
     this.showSpinnie = true;
     let promise = this.af.auth.createUser({ email: this.email.trim(), password: this.password });
     promise.catch((err: any) => {
+      this.signDisabled = false;
       console.log(err);
       this.showSpinnie = false;
       this.handleAuthError(err, 'signup');

@@ -28,10 +28,10 @@
     <ion-item *ngIf="showError">
       <span ion-text color="danger">{{error}}</span>
     </ion-item>
-    <button *ngIf="existing" ion-button [disabled]="password==null || email==null || !(password.length > 0 && email.length > 0)" (click)="login()" primary block> Sign In
+    <button *ngIf="existing" ion-button [disabled]="signDisabled || password==null || email==null || !(password.length > 0 && email.length > 0)" (click)="login()" primary block> Sign In
       <ion-spinner *ngIf="showSpinnie" name="ios"></ion-spinner>
     </button>
-    <button *ngIf="!existing" ion-button [disabled]="password==null || email==null || !(password.length > 0 && email.length > 0)" (click)="signup()" gray block>Sign Up
+    <button *ngIf="!existing" ion-button [disabled]="signDisabled || password==null || email==null || !(password.length > 0 && email.length > 0)" (click)="signup()" gray block>Sign Up
       <ion-spinner *ngIf="showSpinnie" name="ios"></ion-spinner>
     </button>
     <button *ngIf="showForgotPasswd" ion-button (click)="forgotpasswd()" secondary block> Send Password Reset mail</button>

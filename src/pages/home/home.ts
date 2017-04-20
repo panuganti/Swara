@@ -19,6 +19,7 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
+    // Get all mybabies and choose the default one if not specified.
     var id = this.navParams.get("id");
     this.babyid = id;
     this.baby = this.af.database.object('/Babies/' + this.babyid);

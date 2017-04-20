@@ -17,7 +17,7 @@
   </ion-card>
   <ion-card *ngIf="showAddDialog || forceAddDialog">
     <ion-card-header color="primary"> Enter Baby's Details</ion-card-header>
-    <addbaby id="{{getId(babies | async)}}" (add)="addBaby($event)"> </addbaby>
+    <addbaby (add)="addBaby($event)"> </addbaby>
   </ion-card>
   <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)" (show)="showBaby($event)"
     id="{{baby.babyid}}">
