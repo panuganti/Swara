@@ -1,5 +1,8 @@
 <ion-header>
-  <ion-navbar hideBackButton color="danger">
+  <ion-navbar color="danger">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <baby-header title="{{getTitle(baby | async)}}" showBabies="showBabies()" (logout)="logoutClicked()"> </baby-header>
   </ion-navbar>
 </ion-header>
@@ -7,14 +10,13 @@
 <ion-content>
   <code-push> </code-push>
   <date-selector (date)="setDate($event)"> </date-selector>
-  <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" 
-  (diapering)="showDiaperDialog()"> 
+  <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" (diapering)="showDiaperDialog()">
   </event-selector>
 
-  <ion-card *ngIf="showAlarmCard"> 
-    <ion-content> 
+  <ion-card *ngIf="showAlarmCard">
+    <ion-content>
       <time-date defaultDate="{{alarmTime}}"> </time-date>
-      <ion-item> 
+      <ion-item>
         <ion-textarea [(ngModel)]="alarmNote" rows=2> </ion-textarea>
       </ion-item>
       <button ion-button> </button>

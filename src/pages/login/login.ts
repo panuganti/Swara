@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import * as firebase from 'firebase';
 import { FirebaseListObservable, AngularFire, AuthProviders, AuthMethods } from 'angularfire2';
 import { ProfilesPage } from '../profiles/profiles';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'page-login',
@@ -19,17 +19,9 @@ export class LoginPage {
   showForgotPasswd: boolean = false;
 
   constructor(public navCtrl: NavController, public af: AngularFire) {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.navCtrl.setRoot(ProfilesPage);
-      } else {
-        // No user is signed in.
-      }
-    });
   }
 
-  ionViewDidLoad() {
-  }
+  ionViewDidLoad() {}
 
   forgotpasswd() {
     let promise = firebase.auth().sendPasswordResetEmail(this.email.trim());

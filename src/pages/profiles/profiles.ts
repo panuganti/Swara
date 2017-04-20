@@ -57,7 +57,7 @@ export class ProfilesPage {
   }
 
   showBaby(id: string) {
-    this.navCtrl.push(HomePage, { id: id });
+    this.navCtrl.setRoot(HomePage, { id: id });
   }
 
   newBaby() {
