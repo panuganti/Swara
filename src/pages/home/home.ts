@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, AlertController, Alert } from 'ionic-angular';
 import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
 import { TimeVolType, TimeVol, Diaper } from '../../library/entities';
 import * as Enumerable from 'linq';
@@ -16,8 +16,9 @@ import { Utils } from '../../library/utils';
 })
 export class HomePage {
   mybabies: FirebaseListObservable<any>;
+  alert: Alert;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
+  constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController,
     public af: AngularFire, public localNotifications: LocalNotifications, public utils: Utils) {
   }
 
@@ -35,23 +36,38 @@ export class HomePage {
     this.resetLists();
   }
 
+  changeBaby() {
+    this.alert.present();
+  }
+
   get_default(): string {
     let user = firebase.auth().currentUser;
     this.mybabies = this.af.database.list('/Babies' + '_' + this.utils.sanitize_email(user.email));
+    this.alert = this.alertCtrl.create();
+    this.alert.setTitle('Select Baby');
+    this.alert.addButton('Cancel');
+    this.alert.addButton({
+      text: 'OK',
+      handler: data => {
+        this.babyid = data;
+        this.resetLists();
+      }
+    });
+
     this.mybabies.subscribe((babies: any) => {
       if (!babies) { return; }
       for (var baby of babies) {
         if (baby.default) {
           this.babyid = baby.babyid; this.baby = this.af.database.object('/Babies/' + this.babyid);
-          break;
         }
+        var babyref = this.af.database.object('/Babies/' + baby.babyid);
+        babyref.subscribe((babe) => {
+          this.alert.addInput({ type: 'radio', label: babe.name, value: babe.id, checked: baby.default });
+        });
       }
     })
     return;
   }
-
-
-
 
 
   resetLists() {
@@ -66,7 +82,9 @@ export class HomePage {
   }
 
   getTitle(baby) {
-    return this.getName(baby) + ' (' + this.getAge(baby) + ' days old)';
+    if (baby == null) { return ''; }
+    if (baby.name.length > 15) { return baby.name.substring(0, 12) + "..."; }
+    else { return baby.name; }
   }
 
   logoutClicked() {
@@ -216,11 +234,6 @@ export class HomePage {
   }
 
   //#endregion Feeding
-
-  getName(baby: any): string {
-    if (baby == null) { return ''; }
-    return baby.name;
-  }
 
   getAge(baby: any): number {
     if (baby == null) { return 0; }
