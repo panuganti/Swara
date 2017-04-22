@@ -4,28 +4,55 @@ import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'a
 import { TimeVolType, TimeVol, Diaper } from '../../library/entities';
 import * as Enumerable from 'linq';
 import * as moment from 'moment';
+import * as firebase from 'firebase';
 import { ProfilesPage } from '../profiles/profiles';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { LoginPage } from '../login/login';
+import { Utils } from '../../library/utils';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+  mybabies: FirebaseListObservable<any>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public af: AngularFire, public localNotifications: LocalNotifications) {
+    public af: AngularFire, public localNotifications: LocalNotifications, public utils: Utils) {
   }
 
   ionViewDidLoad() {
     // Get all mybabies and choose the default one if not specified.
     var id = this.navParams.get("id");
-    this.babyid = id;
-    this.baby = this.af.database.object('/Babies/' + this.babyid);
+    if (id != null) {
+      this.babyid = id;
+      this.baby = this.af.database.object('/Babies/' + this.babyid);
+    }
+    else {
+      this.get_default();
+    }
     this.pageDate = moment().format();
     this.resetLists();
   }
+
+  get_default(): string {
+    let user = firebase.auth().currentUser;
+    this.mybabies = this.af.database.list('/Babies' + '_' + this.utils.sanitize_email(user.email));
+    this.mybabies.subscribe((babies: any) => {
+      if (!babies) { return; }
+      for (var baby of babies) {
+        if (baby.default) {
+          this.babyid = baby.babyid; this.baby = this.af.database.object('/Babies/' + this.babyid);
+          break;
+        }
+      }
+    })
+    return;
+  }
+
+
+
+
 
   resetLists() {
     var query = { orderByChild: "date", equalTo: this.getDate(this.pageDate) };
@@ -106,7 +133,7 @@ export class HomePage {
 
   showAlarm(type) {
     this.showAlarmCard = true;
-    this.alarmTime = moment().add(3,'h').format();
+    this.alarmTime = moment().add(3, 'h').format();
     this.alarmNote = '';
   }
 
@@ -115,7 +142,7 @@ export class HomePage {
   alarmNote: string;
   setAlarm(type: string) {
     this.localNotifications.schedule({
-      id: 1, text: this.alarmNote, at: new Date(this.alarmTime), 
+      id: 1, text: this.alarmNote, at: new Date(this.alarmTime),
       led: 'FF0000', title: type
     });
     this.showAlarmCard = true;

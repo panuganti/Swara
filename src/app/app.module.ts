@@ -13,7 +13,6 @@ import {TimeDateVolComponent} from '../components/time-date-vol/time-date-vol';
 import {TimeDateComponent} from '../components/time-date/time-date';
 import {DiaperComponent} from '../components/diaper/diaper';
 import { AddBabyComponent } from '../components/addbaby/addbaby';
-import {BabyHeaderComponent} from '../components/baby-header/baby-header';
 import { DateSelectorComponent } from '../components/date-selector/date-selector';
 import { EventSelectorComponent } from '../components/event-selector/event-selector';
 import { CodePushComponent } from '../components/code-push/code-push';
@@ -26,6 +25,8 @@ import { Camera } from '@ionic-native/camera';
 import { SocialSharing} from '@ionic-native/social-sharing';
 import { CodePush } from '@ionic-native/code-push';
 import { LocalNotifications} from '@ionic-native/local-notifications'
+
+import { Utils } from '../library/utils';
 
 enableProdMode();
 
@@ -45,7 +46,6 @@ export const firebaseConfig = {
     BabyComponent,
     LoginPage,
     AddBabyComponent,
-    BabyHeaderComponent,
     DateSelectorComponent,
     EventSelectorComponent,
     CodePushComponent
@@ -63,7 +63,6 @@ export const firebaseConfig = {
     TimeDateComponent,
     DiaperComponent,
     BabyComponent,
-    BabyHeaderComponent,
     LoginPage,
     AddBabyComponent,
     DateSelectorComponent,
@@ -77,6 +76,7 @@ export const firebaseConfig = {
     SocialSharing,
     LocalNotifications,
     CodePush,
+    Utils,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

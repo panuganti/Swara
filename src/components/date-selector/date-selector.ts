@@ -15,7 +15,6 @@ export class DateSelectorComponent {
 
   ngOnInit() {
     this.componentDate = moment().format();
-    console.log(this.componentDate)
     this.showNextDate = false;
   }
 
