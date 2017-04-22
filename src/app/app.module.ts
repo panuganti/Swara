@@ -1,6 +1,8 @@
 import { NgModule, ErrorHandler, enableProdMode } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { CommonModule } from '@angular/common';  
+import { BrowserModule } from '@angular/platform-browser';
 
 // Import All Pages
 import { HomePage } from '../pages/home/home';
@@ -51,6 +53,8 @@ export const firebaseConfig = {
     CodePushComponent
   ],
   imports: [
+    BrowserModule,
+    CommonModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig)
   ],

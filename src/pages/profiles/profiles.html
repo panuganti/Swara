@@ -3,25 +3,17 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title style="text-align: center">
+    <ion-title text-center>
       Your Babies
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-card *ngIf="getCount(mybabies | async, showAddDialog)==0">
-    <ion-card-header>
-      Add your baby's profile to get started
-    </ion-card-header>
-  </ion-card>
-  <ion-card *ngIf="showAddDialog || forceAddDialog">
-    <ion-card-header color="primary"> Enter Baby's Details</ion-card-header>
-    <addbaby (add)="addBaby($event)"> </addbaby>
-  </ion-card>
-  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)" (show)="showBaby($event)"
-    id="{{baby.babyid}}">
-  </baby>
+<ion-content>
+  <addbaby *ngIf="showAddDialog || forceAddDialog" (add)="addBaby($event)"> </addbaby>
+
+  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)"
+   (show)="showBaby($event)" id="{{baby.babyid}}">   </baby>
 
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="newBaby()"> 
