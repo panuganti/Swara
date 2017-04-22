@@ -43,7 +43,7 @@ export class MyApp {
       splashScreen.hide();
         firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          this.rootPage = ProfilesPage;
+          this.rootPage = HomePage;
         } else {
           this.rootPage = LoginPage;              }
       });
