@@ -1,0 +1,29 @@
+<ion-card color="primary">
+  <ion-card-header>
+    Feeding
+  </ion-card-header>
+  <ion-list>
+    <ion-item (click)="toggleFeeding()">
+      <ion-grid>
+        <ion-row>
+          <ion-col width-80>
+            <h2 ion-text color="dark"> {{getLastFeedType(feeding | async, yestfeeding | async)}} {{getLastFeedTime(feeding | async, yestfeeding | async)}}
+            </h2>
+            <h2 ion-text *ngIf="showNoFeedingText" color="dark"> Add Feeding record to get started </h2>
+          </ion-col>
+          <ion-col width-20>
+            <button ion-item icon-only (click)="showAlarm('feeding')"> 
+                <ion-icon name="alarm"> </ion-icon>
+              </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+  <ion-list *ngIf="expandFeedingList">
+    <ion-item *ngFor="let feed of feeding | async" (click)="editFeeding(feed)">
+      <hr>
+      <h2 color="dark"> {{feed.type}} {{feed.volume}} {{getUnits(feed)}} at {{formatTime(feed.time)}} </h2>
+    </ion-item>
+  </ion-list>
+</ion-card>

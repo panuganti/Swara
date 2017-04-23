@@ -1,10 +1,12 @@
-<ion-item>
-  <ion-label color="primary"> Diaper Condition </ion-label>
-  <ion-select [(ngModel)]="type">
-    <ion-option value="pee"> Pee </ion-option>
-    <ion-option value="poop"> Poop </ion-option>
-    <ion-option value="both"> Both </ion-option>
-  </ion-select>
-</ion-item>
-<time-date defaultDate="{{inputDate}}" (timedate)="updatetimedate($event)"> </time-date>
-<button ion-button block [disabled]="type==null || time == null || date ==null" (click)="saveClicked()" color="dark"> Save </button>
+<ion-card>
+  <ion-item>
+    <ion-label color="primary"> Diaper Condition </ion-label>
+    <ion-select [(ngModel)]="type">
+      <ion-option value="pee"> Pee </ion-option>
+      <ion-option value="poop"> Poop </ion-option>
+      <ion-option value="both"> Both </ion-option>
+    </ion-select>
+  </ion-item>
+  <time-date defaultDate="{{inputDate}}" (timedate)="updatetimedate($event)"> </time-date>
+  <button ion-button block [disabled]="type==null || time == null || date ==null" (click)="saveClicked()" color="dark"> Save </button>
+</ion-card>

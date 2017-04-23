@@ -1,0 +1,4 @@
+  <ion-card *ngIf="showPumping">
+    <ion-card-header> Pumping </ion-card-header>
+    <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{pumpingDate}}" defaultVolume="{{pumpingVolume}}" (save)="save($event, editType, key)"></time-date-vol>
+  </ion-card>

@@ -18,6 +18,8 @@ import { AddBabyComponent } from '../components/addbaby/addbaby';
 import { DateSelectorComponent } from '../components/date-selector/date-selector';
 import { EventSelectorComponent } from '../components/event-selector/event-selector';
 import { CodePushComponent } from '../components/code-push/code-push';
+import { PumpingComponent } from '../components/pumping/pumping';
+import { FeedingSummaryComponent } from '../components/feeding-summary/feeding-summary';
 
 import {AngularFireModule} from 'angularfire2';
 // Import Ionic Native
@@ -50,7 +52,9 @@ export const firebaseConfig = {
     AddBabyComponent,
     DateSelectorComponent,
     EventSelectorComponent,
-    CodePushComponent
+    CodePushComponent,
+    PumpingComponent,
+    FeedingSummaryComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +75,9 @@ export const firebaseConfig = {
     AddBabyComponent,
     DateSelectorComponent,
     EventSelectorComponent,
-    CodePushComponent
+    CodePushComponent,
+    PumpingComponent,
+    FeedingSummaryComponent
   ],
   providers: [
     StatusBar,

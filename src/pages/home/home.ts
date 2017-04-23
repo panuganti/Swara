@@ -142,12 +142,6 @@ export class HomePage {
   feedingVolume: number;
   editType: boolean = false;
   key: string;
-  editFeeding(feed) {
-    this.feedingDate = feed.date;
-    this.feedingVolume = feed.volume;
-    this.editType = true;
-    this.key = feed.$key;
-  }
 
   showAlarm(type) {
     this.showAlarmCard = true;
@@ -194,8 +188,7 @@ export class HomePage {
       type: type
     };
     if (edit) {
-      // update
-      this.feeding.update("", item);
+      this.feeding.update(key, item);
     }
     else {
       this.feeding.push(item);
@@ -218,14 +211,14 @@ export class HomePage {
     this.showDiaper = false;
   }
 
-  savePumping(ev: TimeVol, edit: boolean, key: string) {
+  savePumping(ev: any) {
     var item = {
-      time: ev.time,
-      date: this.getDate(ev.date),
-      volume: ev.volume
+      time: ev.timedatevol.time,
+      date: this.getDate(ev.timedatevol.date),
+      volume: ev.timedatevol.volume
     };
-    if (edit) {
-      this.pumping.update(key, item);
+    if (ev.editType) {
+      this.pumping.update(ev.key, item);
     }
     else {
       this.pumping.push(item);
