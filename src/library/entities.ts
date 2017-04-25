@@ -1,3 +1,5 @@
+import {  Contact } from '@ionic-native/contacts';
+
 export interface TimeVolType  extends TimeVol {
     type: string;
 }
@@ -21,4 +23,16 @@ export interface Baby {
     gender: string;
     momsname: string;
     imgUrl: string;
+}
+
+export interface Friend {
+    contact: Contact;
+    state: InviteState;
+    accountemail: string;
+}
+
+export enum InviteState {
+    InNetwork,
+    InviteSent,
+    NoInviteSent
 }

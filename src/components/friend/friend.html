@@ -1,0 +1,23 @@
+<ion-card>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-avatar item-left>
+            <img src="{{contact.img}}">
+          </ion-avatar>
+          <h2>{{contact.name}}</h2>
+        </ion-item>
+      </ion-col>
+      <ion-col *ngIf="showInvite || showInviteSent" width-20>
+        <ion-buttons end>
+          <button *ngIf="showInvite" ion-button (click)="inviteClicked()"> INVITE </button>
+          <button *ngIf="showInviteSent" ion-button disabled> INVITED </button>
+        </ion-buttons>
+      </ion-col>
+      <ion-col *ngIf="!(showInvite || showInviteSent)" width-20>
+        <ion-badge item-right *ngIf="notificationCount>0">{{notificationCount}}</ion-badge>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-card>

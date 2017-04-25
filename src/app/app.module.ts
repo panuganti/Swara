@@ -6,18 +6,20 @@ import { BrowserModule } from '@angular/platform-browser';
 
 // Import All Pages
 import { HomePage } from '../pages/home/home';
-import {ProfilesPage} from '../pages/profiles/profiles';
-import {LoginPage} from '../pages/login/login';
+import { ProfilesPage } from '../pages/profiles/profiles';
+import { LoginPage } from '../pages/login/login';
+import { FriendsPage } from '../pages/friends/friends';
 
 // Import All Components
-import {BabyComponent} from '../components/baby/baby';
-import {TimeDateVolComponent} from '../components/time-date-vol/time-date-vol';
-import {TimeDateComponent} from '../components/time-date/time-date';
-import {DiaperComponent} from '../components/diaper/diaper';
+import { BabyComponent } from '../components/baby/baby';
+import { TimeDateVolComponent } from '../components/time-date-vol/time-date-vol';
+import { TimeDateComponent } from '../components/time-date/time-date';
+import { DiaperComponent } from '../components/diaper/diaper';
 import { AddBabyComponent } from '../components/addbaby/addbaby';
 import { DateSelectorComponent } from '../components/date-selector/date-selector';
 import { EventSelectorComponent } from '../components/event-selector/event-selector';
 import { CodePushComponent } from '../components/code-push/code-push';
+import { FriendComponent } from '../components/friend/friend';
 
 import {AngularFireModule} from 'angularfire2';
 // Import Ionic Native
@@ -27,6 +29,7 @@ import { Camera } from '@ionic-native/camera';
 import { SocialSharing} from '@ionic-native/social-sharing';
 import { CodePush } from '@ionic-native/code-push';
 import { LocalNotifications} from '@ionic-native/local-notifications'
+import { Contacts } from '@ionic-native/contacts';;
 
 import { Utils } from '../library/utils';
 
@@ -42,6 +45,7 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     ProfilesPage,
+    FriendsPage,
     TimeDateVolComponent,
     TimeDateComponent,
     DiaperComponent,
@@ -50,7 +54,8 @@ export const firebaseConfig = {
     AddBabyComponent,
     DateSelectorComponent,
     EventSelectorComponent,
-    CodePushComponent
+    CodePushComponent,
+    FriendComponent
   ],
   imports: [
     BrowserModule,
@@ -63,6 +68,7 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     ProfilesPage,
+    FriendsPage,
     TimeDateVolComponent,
     TimeDateComponent,
     DiaperComponent,
@@ -71,7 +77,8 @@ export const firebaseConfig = {
     AddBabyComponent,
     DateSelectorComponent,
     EventSelectorComponent,
-    CodePushComponent
+    CodePushComponent,
+    FriendComponent
   ],
   providers: [
     StatusBar,
@@ -81,6 +88,7 @@ export const firebaseConfig = {
     LocalNotifications,
     CodePush,
     Utils,
+    Contacts,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

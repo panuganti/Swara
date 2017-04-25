@@ -21,6 +21,7 @@
     "@angular/platform-server": "2.4.8",
     "@ionic-native/camera": "^3.1.0",
     "@ionic-native/code-push": "^3.5.0",
+    "@ionic-native/contacts": "^3.5.0",
     "@ionic-native/core": "^3.1.0",
     "@ionic-native/local-notifications": "^3.4.4",
     "@ionic-native/social-sharing": "^3.4.4",
