@@ -11,11 +11,11 @@
 
   <!-- Show 2 segments .. those in network and those not in network -->
   <ion-list *ngIf="segment=='friends'">
-    <friend *ngFor="let contact of getInNetworkContacts(contactStatus)" contact="{{contact}}" notificationCount="{{getNotificationCount(contact)}}"> </friend>
+    <friend *ngFor="let contact of getInNetworkContacts(contactStatus)" name="{{contact.name}}" email="{{contact.accountemail}}" invitestate="{{contact.state}}" notificationCount="{{getNotificationCount(contact)}}"> </friend>
   </ion-list>
 
   <ion-list *ngIf="segment=='invites'">
-    <friend *ngFor="let contact of getInNetworkContacts(contactStatus)" contact="{{contact}}" notificationCount="0" (invite)="invite()"> </friend>
+    <friend *ngFor="let contact of getNotInNetworkFriends(contactStatus)" name="{{contact.name}}" email="{{contact.accountemail}}" invitestate="{{contact.state}}" notificationCount="0" (invite)="invite()"> </friend>
   </ion-list>
 
 </ion-content>

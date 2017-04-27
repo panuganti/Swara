@@ -1,4 +1,4 @@
-import {  Contact } from '@ionic-native/contacts';
+import { MyContact } from '../providers/contacts';
 
 export interface TimeVolType  extends TimeVol {
     type: string;
@@ -26,7 +26,8 @@ export interface Baby {
 }
 
 export interface Friend {
-    contact: Contact;
+    contact: MyContact;
+    name: string;
     state: InviteState;
     accountemail: string;
 }

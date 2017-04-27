@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
+import { FriendsPage } from '../pages/friends/friends';
 
 import { AngularFire } from 'angularfire2';
 import * as firebase from 'firebase'
@@ -28,6 +29,12 @@ export class MyApp {
       icon: 'ios-happy-outline',
       count: 0,
       component: ProfilesPage
+    },
+    {
+      title: 'Friends',
+      icon: 'ios-people-outline',
+      count: 0,
+      component: FriendsPage
     },
     {
       title: 'Logout',

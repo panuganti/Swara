@@ -4,9 +4,11 @@
       <ion-col>
         <ion-item>
           <ion-avatar item-left>
-            <img src="{{contact.img}}">
+            <img src="">
           </ion-avatar>
-          <h2>{{contact.name}}</h2>
+          <h2>{{name}}</h2>
+          <p> {{email}} </p>
+          <p> {{phone}} </p>
         </ion-item>
       </ion-col>
       <ion-col *ngIf="showInvite || showInviteSent" width-20>

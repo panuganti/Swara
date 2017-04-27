@@ -1,13 +1,16 @@
 import { Input, Component, Output, EventEmitter } from '@angular/core';
-import { Friend, InviteState } from '../../library/entities';
-import * as Enumerable from 'linq';
+import { InviteState } from '../../library/entities';
+//import * as Enumerable from 'linq';
 
 @Component({
   selector: 'friend',
   templateUrl: 'friend.html'
 })
 export class FriendComponent {
-@Input() contact: Friend;
+@Input() name: string;
+@Input() email: string;
+@Input() phone: string;
+@Input() invitestate: InviteState;
 @Input() notificationCount: number;
 @Output() invite: EventEmitter<string[]> = new EventEmitter<string[]>();
 
@@ -18,11 +21,11 @@ showInviteSent: boolean;
   }
 
   ngOnInit() {
-    this.showInvite = this.contact.state == InviteState.NoInviteSent;
-    this.showInviteSent = this.contact.state == InviteState.InviteSent;
+    this.showInvite = this.invitestate == InviteState.NoInviteSent;
+    this.showInviteSent = this.invitestate == InviteState.InviteSent;
   }
 
   inviteClicked() {
-    this.invite.emit(Enumerable.from(this.contact.contact.emails).select(e => e.value).toArray());
+    //this.invite.emit(Enumerable.from(this.friend.contact.emails).select(e => e.value).toArray());
   }
 }
