@@ -20,15 +20,8 @@ import { EventSelectorComponent } from '../components/event-selector/event-selec
 import { CodePushComponent } from '../components/code-push/code-push';
 
 import {AngularFireModule} from 'angularfire2';
-// Import Ionic Native
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { Camera } from '@ionic-native/camera';
-import { SocialSharing} from '@ionic-native/social-sharing';
-import { CodePush } from '@ionic-native/code-push';
-import { LocalNotifications} from '@ionic-native/local-notifications'
 
-import { Utils } from '../library/utils';
+import { AppProviders } from './app.providers';
 
 enableProdMode();
 
@@ -37,21 +30,26 @@ declare var Date;
 export const firebaseConfig = {
 };
 
-@NgModule({
-  declarations: [
+const pages: any[] = [
     MyApp,
     HomePage,
     ProfilesPage,
+    LoginPage
+]
+
+const components: any[] = [
     TimeDateVolComponent,
     TimeDateComponent,
     DiaperComponent,
     BabyComponent,
-    LoginPage,
     AddBabyComponent,
     DateSelectorComponent,
     EventSelectorComponent,
-    CodePushComponent
-  ],
+    CodePushComponent  
+];
+
+@NgModule({
+  declarations: components.concat(pages),
   imports: [
     BrowserModule,
     CommonModule,
@@ -59,29 +57,7 @@ export const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,
-    HomePage,
-    ProfilesPage,
-    TimeDateVolComponent,
-    TimeDateComponent,
-    DiaperComponent,
-    BabyComponent,
-    LoginPage,
-    AddBabyComponent,
-    DateSelectorComponent,
-    EventSelectorComponent,
-    CodePushComponent
-  ],
-  providers: [
-    StatusBar,
-    SplashScreen,
-    Camera,
-    SocialSharing,
-    LocalNotifications,
-    CodePush,
-    Utils,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
-  ]
+  entryComponents: pages,
+  providers:  AppProviders.getProviders()
 })
 export class AppModule {}
