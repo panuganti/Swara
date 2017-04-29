@@ -1,5 +1,5 @@
-import { NgModule, ErrorHandler, enableProdMode } from '@angular/core';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { NgModule, enableProdMode } from '@angular/core';
+import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule } from '@angular/platform-browser';

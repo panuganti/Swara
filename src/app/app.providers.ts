@@ -25,6 +25,7 @@ export class AppProviders {
             StatusBar,
             SplashScreen,
             BackgroundMode,
+            CodePush,
             Utils,
             { provide: LocalNotifications, useClass: LocalNotificationsMock},
             { provide: Camera, useClass: CameraMock},
@@ -41,6 +42,7 @@ export class AppProviders {
             LocalNotifications,
             SocialSharing,
             Utils,
+            CodePush,
             {provide: ErrorHandler, useClass: IonicErrorHandler}
             ];  
         } 

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
@@ -37,10 +38,11 @@ export class MyApp {
     }
   ];
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public af: AngularFire) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public af: AngularFire, backgroundmode: BackgroundMode) {
     platform.ready().then(() => {
       statusBar.styleDefault();
       splashScreen.hide();
+      backgroundmode.enable();
         firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           this.rootPage = HomePage;
