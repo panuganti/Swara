@@ -8,6 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HomePage } from '../pages/home/home';
 import {ProfilesPage} from '../pages/profiles/profiles';
 import {LoginPage} from '../pages/login/login';
+import { PhoneVerificationPage } from '../pages/phone-verification/phone-verification';
 
 // Import All Components
 import {BabyComponent} from '../components/baby/baby';
@@ -28,13 +29,20 @@ enableProdMode();
 declare var Date;
 
 export const firebaseConfig = {
+    apiKey: "AIzaSyChiLvTId7LOh97E1Zq_Ih8BzSKxdcu_uI",
+    authDomain: "panuganti-swara.firebaseapp.com",
+    databaseURL: "https://panuganti-swara.firebaseio.com",
+    projectId: "panuganti-swara",
+    storageBucket: "panuganti-swara.appspot.com",
+    messagingSenderId: "506431501481"  
 };
 
 const pages: any[] = [
     MyApp,
     HomePage,
     ProfilesPage,
-    LoginPage
+    LoginPage,
+    PhoneVerificationPage
 ]
 
 const components: any[] = [

@@ -7,6 +7,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
+import { PhoneVerificationPage } from '../pages/phone-verification/phone-verification';
 
 import { AngularFire } from 'angularfire2';
 import * as firebase from 'firebase'
@@ -45,9 +46,10 @@ export class MyApp {
       backgroundmode.enable();
         firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          this.rootPage = HomePage;
+          this.rootPage = PhoneVerificationPage;
         } else {
-          this.rootPage = LoginPage;              }
+          this.rootPage = PhoneVerificationPage;
+        }
       });
     });
   }
