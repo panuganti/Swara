@@ -5,6 +5,6 @@ export class SMSMock extends SMS {
     }
 
     send(phoneNumber: string | string[], message: string, options?: SmsOptions): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve('OK');
     }
 }
