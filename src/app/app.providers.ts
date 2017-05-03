@@ -9,11 +9,14 @@ import { SocialSharing} from '@ionic-native/social-sharing';
 import { CodePush } from '@ionic-native/code-push';
 import { LocalNotifications} from '@ionic-native/local-notifications'
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { SMS } from '@ionic-native/sms'
 
 // Import Mocks
 import { LocalNotificationsMock } from '../mocks/localnotifications.mock';
 import { CameraMock } from '../mocks/camera.mock';
 import { SocialSharingMock } from '../mocks/socialsharing.mock';
+import { SMSMock } from '../mocks/sms.mock';
+
 import { Utils } from '../library/utils';
 
 export class AppProviders {
@@ -27,6 +30,7 @@ export class AppProviders {
             BackgroundMode,
             CodePush,
             Utils,
+            { provide: SMS, useClass: SMSMock},
             { provide: LocalNotifications, useClass: LocalNotificationsMock},
             { provide: Camera, useClass: CameraMock},
             { provide: SocialSharing, useClass: SocialSharingMock},
@@ -41,6 +45,7 @@ export class AppProviders {
             Camera,
             LocalNotifications,
             SocialSharing,
+            SMS,
             Utils,
             CodePush,
             {provide: ErrorHandler, useClass: IonicErrorHandler}

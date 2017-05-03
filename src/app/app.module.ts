@@ -34,7 +34,7 @@ const pages: any[] = [
     MyApp,
     HomePage,
     ProfilesPage,
-    LoginPage
+    LoginPage,
 ]
 
 const components: any[] = [

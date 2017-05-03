@@ -24,6 +24,7 @@
     "@ionic-native/code-push": "^3.5.0",
     "@ionic-native/core": "^3.6.1",
     "@ionic-native/local-notifications": "^3.4.4",
+    "@ionic-native/sms": "^3.6.1",
     "@ionic-native/social-sharing": "^3.4.4",
     "@ionic-native/splash-screen": "3.6.1",
     "@ionic-native/status-bar": "3.6.1",

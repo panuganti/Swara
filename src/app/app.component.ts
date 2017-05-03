@@ -7,15 +7,14 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
-
-import { AngularFire } from 'angularfire2';
+import { Utils } from '../library/utils';
+import { AngularFire,  AuthMethods, AuthProviders } from 'angularfire2';
 import * as firebase from 'firebase'
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-
   rootPage: any;
   pages: any = [
     {
@@ -31,31 +30,57 @@ export class MyApp {
       component: ProfilesPage
     },
     {
-      title: 'Logout',
-      icon: 'ios-log-out-outline',
+      title: 'Friends',
+      icon: 'ios-people-outline',
       count: 0,
-      component: LoginPage
+      component: ProfilesPage // TODO:
     }
   ];
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public af: AngularFire, backgroundmode: BackgroundMode) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public af: AngularFire,
+     backgroundmode: BackgroundMode, public utils: Utils) {
     platform.ready().then(() => {
       statusBar.styleDefault();
       splashScreen.hide();
-      backgroundmode.enable();
-        firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          this.rootPage = HomePage;
-        } else {
-          this.rootPage = LoginPage;              }
-      });
+      this.set_root();
+      backgroundmode.enable();      
+      backgroundmode.configure({ title: 'You have no new notifications', text: '', ticker: '' })
     });
   }
 
-  ionViewDidLoad() {}
+  async set_root() {
+    var user = firebase.auth().currentUser;
+    if (user) { await this.routeToHomeOrProfilesPage();}
+    if (!user) {
+      var phone = window.localStorage.getItem('phone');
+      var secret = window.localStorage.getItem('secret');
+      if (phone && secret) {
+        try {
+          await this.af.auth.login({email: 'User' + phone.toString() + '@trackbabyvitals.com', password: secret },
+                           { provider: AuthProviders.Password, method: AuthMethods.Password });
+          await this.routeToHomeOrProfilesPage();
+        }
+        catch(err) {
+          // TODO:
+          console.log(err);
+        }
+      }
+      else {
+        this.rootPage = LoginPage;
+      }
+    }
+  }
+
+  async routeToHomeOrProfilesPage() {
+    var phone = window.localStorage.getItem('phone');    
+    var mybabies = await this.af.database.list('/Babies' + '_' + phone);
+    mybabies.subscribe((babies: any[]) => {
+        if (!babies || babies.length == 0) { this.rootPage = ProfilesPage; return; }
+        this.rootPage = HomePage;
+      });
+  }
 
   openPage(page) {
-    if(page.title == "Logout") { this.af.auth.logout();}
     this.rootPage = page.component;
   }
 }

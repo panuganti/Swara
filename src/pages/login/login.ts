@@ -1,71 +1,82 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { FirebaseListObservable, AngularFire, AuthProviders, AuthMethods } from 'angularfire2';
-import * as firebase from 'firebase';
-
+import { FirebaseListObservable, AngularFire } from 'angularfire2';
+//import * as firebase from 'firebase';
+import { SMS } from "@ionic-native/sms";
+import { Utils } from '../../library/utils';
+import { HomePage } from '../home/home';
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
 })
 export class LoginPage {
   email: string;
-  password: string;
-  existing: boolean = true;
+  phone: number;
+  code: string;
+  secret: string;
   error: string;
   users: FirebaseListObservable<any>;
   showSpinnie: boolean = false;
   showError: boolean = false;
-  showForgotPasswd: boolean = false;
-  signDisabled: boolean = false;
+  code_generation: boolean = true;
+  verify_code: boolean = false;
+  has_sms_permission: boolean = true;
 
-  constructor(public navCtrl: NavController, public af: AngularFire) {
+  constructor(public navCtrl: NavController, public af: AngularFire,
+    public sms: SMS, public utils: Utils) {
   }
 
-  ionViewDidLoad() { }
-
-  forgotpasswd() {
-    let promise = firebase.auth().sendPasswordResetEmail(this.email.trim());
-    promise.then(() => {
-      this.error = 'Please check your email for resetting your password';
-      this.showError = true;
-    });
-    promise.catch((err) => {
-      this.handleAuthError(err, 'forgotpasswd');
-    });
+  generate_secret_code(): number {
+    var min = 100000; var max = 999999;
+    var now: number = (new Date()).getMilliseconds();
+    return min + Math.round(now % (max - min) * Math.random());
   }
 
-  login() {
-    this.showSpinnie = true;
-    this.signDisabled = true;
-    let promise = this.af.auth.login({ email: this.email.trim(), password: this.password },
-      { provider: AuthProviders.Password, method: AuthMethods.Password });
-    promise.catch((err: any) => {
-      this.signDisabled = false;
-      console.log(err);
-      this.showSpinnie = false;
-      this.handleAuthError(err, 'login');
-    });
+  async send_secret_code_sms(): Promise<any> {
+    var secret = this.generate_secret_code();
+    try {
+      var succ = await this.sms.send(this.phone.toString(), 'Your secret code is: ' + secret);
+      if (succ != 'OK') {
+        // Failed to send sms. Log error
+      }
+      this.code_generation = false;
+      this.verify_code = true;
+      window.localStorage.setItem('secret', secret.toString());
+      window.localStorage.setItem('phone', this.phone.toString());
+    }
+    catch (err) {
+      var has_permission = await this.sms.hasPermission();
+      if (!has_permission) {
+        this.has_sms_permission = has_permission;
+      }
+      else {
+        // Something seriously wrong. Report error.
+      }
+    }
   }
 
-  signup() {
-    this.showSpinnie = true;
-    let promise = this.af.auth.createUser({ email: this.email.trim(), password: this.password });
-    promise.catch((err: any) => {
-      this.signDisabled = false;
-      console.log(err);
-      this.showSpinnie = false;
-      this.handleAuthError(err, 'signup');
-    });
+  async verify() {
+    var phone = window.localStorage.getItem('phone');
+    var secret = window.localStorage.getItem('secret');
+    if (this.code != secret) {
+      // Handle User code not same as secret; 
+      return;
+    }
+    if (phone && secret) {
+      try {
+        var email = 'User' + phone.toString() + '@trackbabyvitals.com';
+        await this.af.auth.createUser({ email: email, password: secret });
+          this.navCtrl.setRoot(HomePage);
+      }
+      catch (err) {
+        // TODO: Firebase throwing error
+        console.log(err);
+      }
+    }
   }
 
-  resetErrors() {
-    this.error = '';
-    this.showError = false;
-    this.showForgotPasswd = false;
-  }
-
+/*
   handleAuthError(err: any, method: string) {
-    this.password = '';
     if (err.code == 'auth/network-request-failed') {
       this.error = "Unable to connect to server. Try again after some time";
     }
@@ -90,4 +101,5 @@ export class LoginPage {
     }
     this.showError = true;
   }
+  */
 }
