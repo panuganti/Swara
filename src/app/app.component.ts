@@ -7,6 +7,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
+import { FriendsPage } from '../pages/friends/friends';
 import { Utils } from '../library/utils';
 import { AngularFire,  AuthMethods, AuthProviders } from 'angularfire2';
 import * as firebase from 'firebase'
@@ -33,7 +34,7 @@ export class MyApp {
       title: 'Friends',
       icon: 'ios-people-outline',
       count: 0,
-      component: ProfilesPage // TODO:
+      component: FriendsPage // TODO:
     }
   ];
 

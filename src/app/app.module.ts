@@ -3,11 +3,13 @@ import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { CommonModule } from '@angular/common';  
 import { BrowserModule } from '@angular/platform-browser';
+import { MomentModule } from 'angular2-moment';
 
 // Import All Pages
 import { HomePage } from '../pages/home/home';
 import {ProfilesPage} from '../pages/profiles/profiles';
 import {LoginPage} from '../pages/login/login';
+import { FriendsPage } from '../pages/friends/friends';
 
 // Import All Components
 import {BabyComponent} from '../components/baby/baby';
@@ -35,6 +37,7 @@ const pages: any[] = [
     HomePage,
     ProfilesPage,
     LoginPage,
+    FriendsPage
 ]
 
 const components: any[] = [
@@ -53,6 +56,7 @@ const components: any[] = [
   imports: [
     BrowserModule,
     CommonModule,
+    MomentModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig)
   ],
