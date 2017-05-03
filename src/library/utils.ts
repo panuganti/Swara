@@ -9,5 +9,5 @@ export class Utils {
     email = email.replace(/#/g, "_");
     email = email.replace(/\//g, "_");
     return email;
-    }
+}
 } 

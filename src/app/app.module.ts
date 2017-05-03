@@ -8,7 +8,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HomePage } from '../pages/home/home';
 import {ProfilesPage} from '../pages/profiles/profiles';
 import {LoginPage} from '../pages/login/login';
-import { PhoneVerificationPage } from '../pages/phone-verification/phone-verification';
 
 // Import All Components
 import {BabyComponent} from '../components/baby/baby';
@@ -36,7 +35,6 @@ const pages: any[] = [
     HomePage,
     ProfilesPage,
     LoginPage,
-    PhoneVerificationPage
 ]
 
 const components: any[] = [
