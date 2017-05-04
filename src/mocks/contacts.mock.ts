@@ -1,20 +1,10 @@
 import { Contacts, Contact, ContactFieldType, IContactFindOptions, ContactField } from '@ionic-native/contacts';
+import { MyContacts } from '../providers/my-contacts';
 import * as Enumerable from 'linq';
+import { MyContact } from '../library/entities';
 
-export class MyContact {
-    displayName: string;
-    phoneNumbers: MyContactField[];
-    emails: MyContactField[];
-};
-
-export class MyContactField {
-    pref?: boolean;
-    value?: string;
-    type?: string;
-}
-
-export class ContactsMock extends Contacts {
-    find(fields: ContactFieldType[], options: IContactFindOptions): Promise<Contact[]> {
+export class MyContactsMock extends MyContacts {
+    async get_my_contacts() : Promise<MyContact[]> {
         let mycontacts: MyContact[] =
             [
                 {
@@ -4052,22 +4042,7 @@ export class ContactsMock extends Contacts {
                     ]
                 }
             ];
-
-
-
-
-
-
-
-
-
-        let contacts: Contact[] = Enumerable.from(mycontacts).select(mc => {
-            let contact = new Contact();
-            contact.displayName = mc.displayName;
-            contact.phoneNumbers = Enumerable.from(mc.phoneNumbers).select(p => new ContactField(p.type, p.value, p.pref)).toArray();
-            contact.emails = Enumerable.from(mc.emails).select(e => new ContactField(e.type, e.value, e.pref)).toArray();
-            return contact;
-        }).toArray();
-        return Promise.resolve(contacts);
+        
+        return Promise.resolve(mycontacts);
     }
 }

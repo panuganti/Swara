@@ -46,9 +46,20 @@ export interface ChatRoom {
 }
 
 export interface User {
-    $key: string;
-    displayName: string;
+    displayName?: string;
     phone: string;
-    email?: string;
+    email: string;
     picture?: string;
+}
+
+export class MyContact {
+    displayName: string;
+    phoneNumbers: MyContactField[];
+    emails: MyContactField[];
+};
+
+export class MyContactField {
+    pref?: boolean;
+    value?: string;
+    type?: string;
 }

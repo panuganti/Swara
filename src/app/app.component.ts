@@ -9,7 +9,7 @@ import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
 import { FriendsPage } from '../pages/friends/friends';
 import { Utils } from '../library/utils';
-import { AngularFire,  AuthMethods, AuthProviders } from 'angularfire2';
+import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
 import * as firebase from 'firebase'
 
 @Component({
@@ -39,29 +39,31 @@ export class MyApp {
   ];
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public af: AngularFire,
-     backgroundmode: BackgroundMode, public utils: Utils) {
+    backgroundmode: BackgroundMode, public utils: Utils) {
     platform.ready().then(() => {
       statusBar.styleDefault();
       splashScreen.hide();
       this.set_root();
-      backgroundmode.enable();      
-      backgroundmode.configure({ title: 'You have no new notifications', text: '', ticker: '' })
+      backgroundmode.enable();
+      backgroundmode.configure({ title: '', text: '', ticker: '' })
     });
   }
 
   async set_root() {
+    await this.af.auth.logout();
     var user = firebase.auth().currentUser;
-    if (user) { await this.routeToHomeOrProfilesPage();}
+    if (user) { await this.routeToHomeOrProfilesPage(); }
     if (!user) {
       var phone = window.localStorage.getItem('phone');
       var secret = window.localStorage.getItem('secret');
-      if (phone && secret) {
+      var email = window.localStorage.getItem('email');
+      if (phone && secret && email) {
         try {
-          await this.af.auth.login({email: 'User' + phone.toString() + '@trackbabyvitals.com', password: secret },
-                           { provider: AuthProviders.Password, method: AuthMethods.Password });
+          await this.af.auth.login({ email: email, password: secret },
+                { provider: AuthProviders.Password, method: AuthMethods.Password });
           await this.routeToHomeOrProfilesPage();
         }
-        catch(err) {
+        catch (err) {
           // TODO:
           console.log(err);
         }
@@ -73,12 +75,13 @@ export class MyApp {
   }
 
   async routeToHomeOrProfilesPage() {
-    var phone = window.localStorage.getItem('phone');    
-    var mybabies = await this.af.database.list('/Babies' + '_' + phone);
-    mybabies.subscribe((babies: any[]) => {
-        if (!babies || babies.length == 0) { this.rootPage = ProfilesPage; return; }
-        this.rootPage = HomePage;
-      });
+    var phone = window.localStorage.getItem('phone');
+    var mybabies = (await this.af.database.list('/Babies' + '_' + phone).$ref.once('value')).val();
+    if (mybabies != null) {
+      this.rootPage = HomePage;
+      return;
+    }
+    this.rootPage = FriendsPage;
   }
 
   openPage(page) {

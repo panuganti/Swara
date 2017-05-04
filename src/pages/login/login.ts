@@ -5,6 +5,8 @@ import { FirebaseListObservable, AngularFire } from 'angularfire2';
 import { SMS } from "@ionic-native/sms";
 import { Utils } from '../../library/utils';
 import { HomePage } from '../home/home';
+import { User } from '../../library/entities';
+
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
@@ -21,6 +23,7 @@ export class LoginPage {
   code_generation: boolean = true;
   verify_code: boolean = false;
   has_sms_permission: boolean = true;
+  attempt: number = 0;
 
   constructor(public navCtrl: NavController, public af: AngularFire,
     public sms: SMS, public utils: Utils) {
@@ -37,7 +40,8 @@ export class LoginPage {
     try {
       var succ = await this.sms.send(this.phone.toString(), 'Your secret code is: ' + secret);
       if (succ != 'OK') {
-        // Failed to send sms. Log error
+        // TODO: Failed to send sms. Log error
+        console.log('SMS sending failed');
       }
       this.code_generation = false;
       this.verify_code = true;
@@ -63,20 +67,45 @@ export class LoginPage {
       return;
     }
     if (phone && secret) {
-      try {
-        var email = 'User' + phone.toString() + '@trackbabyvitals.com';
-        await this.af.auth.createUser({ email: email, password: secret });
-          this.navCtrl.setRoot(HomePage);
-      }
-      catch (err) {
-        // TODO: Firebase throwing error
-        console.log(err);
-      }
+      await this.create_user();
     }
   }
 
-/*
-  handleAuthError(err: any, method: string) {
+  async create_user() {
+    try {
+      var phone = window.localStorage.getItem('phone');
+      var secret = window.localStorage.getItem('secret');
+      let email: string = this.utils.email_from_phone(phone, this.attempt);
+      await this.af.auth.createUser({ email: email, password: secret });
+      window.localStorage.setItem('email', email);
+      await this.add_user();
+      this.navCtrl.setRoot(HomePage);
+    }
+    catch (err) {
+      // TODO: Firebase throwing error
+      await this.handleAuthErrorAsync(err, 'signup');
+    }
+  }
+
+  async add_user() {
+    try {
+      var phone = window.localStorage.getItem('phone');
+      var users = (await this.af.database.list('/Users').$ref
+                    .orderByChild('phone').equalTo(phone).once('value')).val();
+      if (users != null) {return;}
+      var new_user: User = { phone: phone, email: this.email };
+      this.af.database.list('/Users').push(new_user);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+  async handleAuthErrorAsync(err: any, method: string) {
+    if (method == 'signup' && err.code == 'auth/email-already-in-use') {
+      this.attempt++;
+      await this.create_user();
+    }
     if (err.code == 'auth/network-request-failed') {
       this.error = "Unable to connect to server. Try again after some time";
     }
@@ -86,20 +115,15 @@ export class LoginPage {
     else if (method == 'signup' && err.code == 'auth/weak-password') {
       this.error = err.message;
     }
-    else if (method == 'signup' && err.code == 'auth/email-already-in-use') {
-      this.error = "Already signed up. Please check I'm Existing User to Sign in";
-    }
     else if (err.code == 'invalid-email') {
       this.error = "Invalid Email";
     }
     else if (method == 'login' && err.code == 'auth/wrong-password') {
       this.error = "Wrong Password";
-      this.showForgotPasswd = true;
     }
     else {
       this.error = err.message;
     }
     this.showError = true;
   }
-  */
 }

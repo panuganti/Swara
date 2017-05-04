@@ -1,4 +1,3 @@
-
 <ion-header>
   <ion-navbar color="whatsapp">
     <ion-title>
@@ -14,24 +13,27 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
- 
+
 <ion-content class="chats-page-content">
   <ion-list class="chats">
-    <ion-item-sliding *ngFor="let chat of chats">
-      <button ion-item class="chat" (click)="showMessages(chat)">
+    <button *ngFor="let chat of chats" ion-item class="chat" (click)="showMessages(chat)">
         <img class="chat-picture" [src]="chat.picture">
         <div class="chat-info">
-          <h2 class="chat-title">{{chat}}</h2>
- 
+          <h2 class="chat-title">{{chat.title}}</h2>
+          <button class="invite-button" ion-button *ngIf="!chat.inNetwork" secondary (click)="invite(chat)"> 
+            INVITE 
+          </button>
+          <span *ngIf="!chat.inNetwork" class="last-message"> 
+            <p class="last-message-content last-message-content-text">Hey, Please send me an invite </p>
+          </span>
+          <span *ngIf="chat.inNetwork && chat.lastMessage == null" class="last-message"> 
+            <p class="last-message-content last-message-content-text">Hey, I'm using Baby Tracker </p>
+          </span>
           <span *ngIf="chat.lastMessage" class="last-message">
             <p *ngIf="chat.lastMessage.type == 'text'" class="last-message-content last-message-content-text">{{chat.lastMessage.content}}</p>
             <span class="last-message-timestamp">{{ chat.lastMessage.createdAt | amCalendar }}</span>
           </span>
         </div>
       </button>
-      <ion-item-options class="chat-options">
-        <button ion-button color="danger" class="option option-remove"  (click)="removeChat(chat)">Remove</button>
-      </ion-item-options>
-    </ion-item-sliding>
   </ion-list>
 </ion-content>
