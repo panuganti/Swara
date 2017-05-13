@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import { FirebaseListObservable, AngularFire } from 'angularfire2';
-//import * as firebase from 'firebase';
+import { NavController, ViewController } from 'ionic-angular';
+import { FirebaseListObservable} from 'angularfire2';
 import { SMS } from "@ionic-native/sms";
 import { Utils } from '../../library/utils';
-import { HomePage } from '../home/home';
+//import { HomePage } from '../home/home';
 import { User } from '../../library/entities';
+import { FirebaseService } from '../../providers/firebase-service';
 
 @Component({
   selector: 'page-login',
@@ -17,6 +17,7 @@ export class LoginPage {
   code: string;
   secret: string;
   error: string;
+
   users: FirebaseListObservable<any>;
   showSpinnie: boolean = false;
   showError: boolean = false;
@@ -25,14 +26,13 @@ export class LoginPage {
   has_sms_permission: boolean = true;
   attempt: number = 0;
 
-  constructor(public navCtrl: NavController, public af: AngularFire,
-    public sms: SMS, public utils: Utils) {
+  constructor(public navCtrl: NavController, public fbs: FirebaseService,
+    public sms: SMS, public utils: Utils, public view: ViewController) {
   }
 
   generate_secret_code(): number {
     var min = 100000; var max = 999999;
-    var now: number = (new Date()).getMilliseconds();
-    return min + Math.round(now % (max - min) * Math.random());
+    return min + Math.round(Date.now() % (max - min) * Math.random());
   }
 
   async send_secret_code_sms(): Promise<any> {
@@ -60,26 +60,31 @@ export class LoginPage {
   }
 
   async verify() {
-    var phone = window.localStorage.getItem('phone');
     var secret = window.localStorage.getItem('secret');
     if (this.code != secret) {
       // Handle User code not same as secret; 
       return;
     }
+    var phone = window.localStorage.getItem('phone');
     if (phone && secret) {
       await this.create_user();
     }
+  }
+
+  show_verification_error() {
+    this.showError = true;
+    this.error = "User code not same as secret";
   }
 
   async create_user() {
     try {
       var phone = window.localStorage.getItem('phone');
       var secret = window.localStorage.getItem('secret');
-      let email: string = this.utils.email_from_phone(phone, this.attempt);
-      await this.af.auth.createUser({ email: email, password: secret });
-      window.localStorage.setItem('email', email);
+      let email_from_phone: string = this.utils.email_from_phone(phone, this.attempt);
+      await this.fbs.create_user(email_from_phone, secret);
+      window.localStorage.setItem('email_from_phone', email_from_phone);
       await this.add_user();
-      this.navCtrl.setRoot(HomePage);
+      this.view.dismiss();
     }
     catch (err) {
       // TODO: Firebase throwing error
@@ -90,11 +95,10 @@ export class LoginPage {
   async add_user() {
     try {
       var phone = window.localStorage.getItem('phone');
-      var users = (await this.af.database.list('/Users').$ref
-                    .orderByChild('phone').equalTo(phone).once('value')).val();
-      if (users != null) {return;}
+      var users = await this.fbs.get_users_once();
+      if (users == null) {return;}
       var new_user: User = { phone: phone, email: this.email };
-      this.af.database.list('/Users').push(new_user);
+      await this.fbs.get_users().push(new_user);
     }
     catch (err) {
       console.log(err);

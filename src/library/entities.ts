@@ -1,3 +1,4 @@
+// Start todo comment
 export interface TimeVolType  extends TimeVol {
     type: string;
 }
@@ -13,6 +14,26 @@ export interface Diaper extends Time {
 export interface Time {
     time: string;
     date: string;
+}
+// End todo comment
+
+export interface Log {
+    type: LogType,
+    time: string;
+    date: string;
+    volume: number;
+}
+
+export enum LogType {
+    Feeding,
+    Diaper,
+    Pumping
+}
+
+export interface MyBaby {
+    admintype: string;
+    babyid: string;
+    default: boolean;
 }
 
 export interface Baby {

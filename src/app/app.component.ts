@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Platform, ModalController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { BackgroundMode } from '@ionic-native/background-mode';
@@ -9,8 +9,9 @@ import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
 import { FriendsPage } from '../pages/friends/friends';
 import { Utils } from '../library/utils';
-import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
-import * as firebase from 'firebase'
+//import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
+//import * as firebase from 'firebase'
+import { FirebaseService } from '../providers/firebase-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -38,29 +39,39 @@ export class MyApp {
     }
   ];
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public af: AngularFire,
-    backgroundmode: BackgroundMode, public utils: Utils) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, public fbs: FirebaseService,
+    backgroundmode: BackgroundMode, public utils: Utils, public modal: ModalController) {
     platform.ready().then(() => {
-      statusBar.styleDefault();
-      splashScreen.hide();
+      if (platform.is('cordova')) {
+        statusBar.styleDefault();
+        splashScreen.hide();
+        backgroundmode.enable();
+        backgroundmode.configure({ title: '', text: '', ticker: '' })
+      }
       this.set_root();
-      backgroundmode.enable();
-      backgroundmode.configure({ title: '', text: '', ticker: '' })
     });
   }
 
+  // Only for testing
+  async reset() {
+    await this.fbs.logout(); // TODO: remove later
+    window.localStorage.removeItem('phone');
+    window.localStorage.removeItem('secret');
+    window.localStorage.removeItem('email');
+    window.localStorage.removeItem('email_from_phone');
+  }
+
   async set_root() {
-    await this.af.auth.logout();
-    var user = firebase.auth().currentUser;
+    //await this.reset();
+    var user = this.fbs.get_user();
     if (user) { await this.routeToHomeOrProfilesPage(); }
     if (!user) {
       var phone = window.localStorage.getItem('phone');
       var secret = window.localStorage.getItem('secret');
-      var email = window.localStorage.getItem('email');
-      if (phone && secret && email) {
+      var email_from_phone = window.localStorage.getItem('email_from_phone');
+      if (phone && secret && email_from_phone) {
         try {
-          await this.af.auth.login({ email: email, password: secret },
-                { provider: AuthProviders.Password, method: AuthMethods.Password });
+          await this.fbs.login(email_from_phone, phone, secret);
           await this.routeToHomeOrProfilesPage();
         }
         catch (err) {
@@ -69,19 +80,23 @@ export class MyApp {
         }
       }
       else {
-        this.rootPage = LoginPage;
+        let login_modal = this.modal.create(LoginPage);
+        login_modal.onDidDismiss(async (data) => {
+          await this.routeToHomeOrProfilesPage();          
+        });
+        login_modal.present();
+        //this.rootPage = LoginPage;
       }
     }
   }
 
   async routeToHomeOrProfilesPage() {
-    var phone = window.localStorage.getItem('phone');
-    var mybabies = (await this.af.database.list('/Babies' + '_' + phone).$ref.once('value')).val();
+    var mybabies = await this.fbs.get_my_babies_once();
     if (mybabies != null) {
-      this.rootPage = HomePage;
+      this.rootPage = ProfilesPage;//HomePage
       return;
     }
-    this.rootPage = FriendsPage;
+    this.rootPage = ProfilesPage;
   }
 
   openPage(page) {

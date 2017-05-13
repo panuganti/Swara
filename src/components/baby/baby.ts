@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import * as moment from 'moment';
-import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
+import { FirebaseService } from '../../providers/firebase-service';
+import { Baby } from '../../library/entities';
 
 @Component({
   selector: 'baby',
@@ -8,62 +8,53 @@ import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
 })
 export class BabyComponent {
   @Input() id: string;
+  @Input() admin: boolean;
   @Output() share: EventEmitter<any> = new EventEmitter<any>();
   @Output() show: EventEmitter<string> = new EventEmitter<string>();
-  @Output() delete: EventEmitter<string> = new EventEmitter<string>();
+  @Output() delete: EventEmitter<any> = new EventEmitter<any>();
 
+  baby: Baby;
   showShareToolbar: boolean = false;
   email: string;
   color: string = "border-left: 2px solid blue;";
-  baby: FirebaseObjectObservable<any>;
+  name: string;
+  dob: string;
+  img: string;
+  gender: string;
+  momsname: string;
 
-  constructor(public af: AngularFire) {
+  constructor(private fbs: FirebaseService) {
   }
 
-  deleteClicked() {
-    this.delete.emit(this.id);
+  ngOnInit() {
+    this.init();
+  }
+
+  async init() {
+    let baby: any = await this.fbs.get_baby_once(this.id);
+    if (baby && baby != null) {
+      this.name = baby.name;
+      this.dob = baby.dob;
+      this.gender = baby.gender;
+      this.momsname = baby.momsname;
+      this.img = baby.imgUrl;
+    }
+  }
+
+  async deleteClicked() {
+    this.fbs.delete_baby_from_my_babies(this.id);
+    if (this.admin) {
+      this.fbs.delete_log(this.id);
+      this.fbs.delete_baby(this.id);
+    }
+      this.delete.emit();
   }
 
   showClicked() {
     this.show.emit(this.id);
   }
 
-  shareClicked() {
-    this.share.emit({id: this.id, email: this.email});
-    this.email = '';
-    this.showShareToolbar = false;
-  }
-
   showShare() {
-    this.showShareToolbar = true;
-  }
-
-  ngOnInit() {
-    this.baby = this.af.database.object('/Babies/' + this.id);
-  }
-
-  getName(baby: any): string {
-    if (baby == null) {return '';}
-    return baby.name;
-  }
-
-  getDob(baby: any): string {
-    if (baby == null) {return '';}
-    return moment(baby.dob).format('MMM DD YYYY');
-  }
-
-  getGender(baby: any): string {
-    if (baby == null) {return 'u';}
-    return baby.gender
-  }
-
-  getMomsName(baby: any): string {
-    if (baby == null) {return '';}
-    return baby.momsname
-  }
-
-  getImgUrl(baby: any) : string {
-    if (baby == null || baby.imgUrl == '' || baby.imgUrl == 'dummy') {return 'assets/resources/baby2.jpg';}
-    return baby.imgUrl;
+    console.log('share');
   }
 }

@@ -1,18 +1,18 @@
-<ion-card>
-  <ion-grid class="{{getGender(baby | async)}}">
+<ion-card (click)="showClicked()">
+  <ion-grid class="{{gender}}">
     <ion-row>
       <ion-col>
         <ion-item>
           <ion-avatar item-left>
-            <img src="{{getImgUrl(baby | async)}}">
+            <img src="{{img}}">
           </ion-avatar>
-          <h2>{{getName(baby | async)}}</h2>
-          <p>{{getDob(baby | async)}} </p>
+          <h2>{{name}}</h2>
+          <p> {{dob}} </p>
         </ion-item>
       </ion-col>
       <ion-col col-auto>
         <ion-buttons end>
-          <button ion-button icon-only clear (click)="showShare()"> 
+          <button *ngIf="admin" ion-button icon-only clear (click)="showShare()"> 
               <ion-icon name="share"> </ion-icon>
             </button>
           <button ion-button icon-only clear (click)="deleteClicked()"> 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Contacts, Contact, ContactFieldType, IContactField, IContactFindOptions, ContactField } from '@ionic-native/contacts';
+import { Contacts, Contact, IContactField } from '@ionic-native/contacts';
 import 'rxjs/add/operator/map';
 import { MyContact, MyContactField } from '../library/entities';
 import * as Enumerable from 'linq';

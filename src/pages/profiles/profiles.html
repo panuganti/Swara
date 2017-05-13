@@ -10,10 +10,13 @@
 </ion-header>
 
 <ion-content>
-  <addbaby *ngIf="showAddDialog || forceAddDialog" (add)="addBaby($event)"> </addbaby>
+  <addbaby *ngIf="forceAddDialog" (added)="added()"> </addbaby>
 
-  <baby *ngFor="let baby of mybabies | async" (share)="share($event)" (delete)="deleteBaby(baby.$key, baby, $event)"
-   (show)="showBaby($event)" id="{{baby.babyid}}">   </baby>
+  <div class="center" *ngIf="baby_count==0"> Add Baby to get started </div>
+
+  <baby *ngFor="let baby of my_babies | async" (share)="share($event)" 
+    (delete)="deleteBaby()" (show)="showBaby($event)"
+    id="{{baby.babyid}}"> </baby>
 
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="newBaby()"> 

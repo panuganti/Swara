@@ -1,4 +1,3 @@
-<ion-card>
 <ion-card-header text-center> Enter Baby's Details</ion-card-header>
 <ion-list>
   <ion-item>
@@ -29,22 +28,23 @@
     <ion-label floating> Mother's Name </ion-label>
     <ion-input type="text" [(ngModel)]="momsname" (change)="enableAddButton()"> </ion-input>
   </ion-item>
-  <ion-item class="item-profile">
-    <ion-avatar style="text-align: center" *ngIf="!showImg">
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <ion-icon class="big-font" name="ios-camera-outline" (click)="getFromCamera()"> </ion-icon>
-          </ion-col>
-          <ion-col>
-            <ion-icon class="big-font" name="images" (click)="getFromGallery()"> </ion-icon>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-avatar>
-    <img *ngIf="showImg" class="preview" src="{{image}}">
-  </ion-item>
+
+<ion-item class="item-profile">
+  <ion-avatar style="text-align: center" *ngIf="!showImg">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-icon class="big-font" name="ios-camera-outline" (click)="getFromCamera()"> </ion-icon>
+        </ion-col>
+        <ion-col>
+          <ion-icon class="big-font" name="images" (click)="getFromGallery()"> </ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-avatar>
+  <img *ngIf="showImg" class="preview" src="{{image}}">
   <progress *ngIf="showProgressBar" value="{{progress}}" max="100"></progress>
+</ion-item>
+
   <button ion-button full color="primary" (click)="clicked()" [disabled]="!addbuttonenabled"> Create Baby's Profile </button>
 </ion-list>
-</ion-card>

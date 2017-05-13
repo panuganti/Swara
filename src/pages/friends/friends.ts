@@ -5,6 +5,7 @@ import * as Enumerable from 'linq';
 import { ChatRoom, User, MyContact, MyContactField } from '../../library/entities';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import 'rxjs/add/operator/toPromise';
+import { FirebaseService } from '../../providers/firebase-service';
 
 @Component({
   selector: 'page-friends',

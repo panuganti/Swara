@@ -1,59 +1,47 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, Loading } from 'ionic-angular';
 import { HomePage } from '../home/home';
-import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import * as Enumerable from 'linq';
+import { FirebaseListObservable } from 'angularfire2';
 import { Baby } from '../../library/entities';
-import * as firebase from 'firebase';
 import { SocialSharing } from '@ionic-native/social-sharing';
-import {LoginPage} from '../login/login';
+import { FirebaseService } from '../../providers/firebase-service';
 
 @Component({
   selector: 'page-profiles',
   templateUrl: 'profiles.html'
 })
 export class ProfilesPage {
-  name: string = "";
-  dob: string = "";
-  gender: string = "";
-  momsname: string = "";
-  imgUrl: string = "";
-
-  mybabies: FirebaseListObservable<any>;
-  babies: FirebaseListObservable<any>;
-  showAddDialog: boolean = false;
   forceAddDialog: boolean = false;
+  baby_count: number = 0;
+  my_babies: FirebaseListObservable<any>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public af: AngularFire, public social: SocialSharing) { }
-
-  getId(babies: any[]): string {
-    var num = this.getCount(babies) + 1;;
-    return '' + num;
-  }
+    public fbs: FirebaseService, public social: SocialSharing, public loading: LoadingController) { }
 
   ionViewDidLoad() {
-    let user = firebase.auth().currentUser;
-    this.mybabies = this.af.database.list('/Babies' + '_' + this.sanitizeEmail(user.email));
-    this.babies = this.af.database.list('/Babies');
+    this.get_init_count();
   }
 
-  deleteBaby(key, baby, ev) {
-    console.log('deleting' + ev);
-    console.log(key);
-    if (key == '' || key == null) { console.log('wrong key'); return; }
-    this.mybabies.remove(key).then(() => console.log('deleted from my babies')); // TODO: Also remove from shared..but, where is it stored ? 
-    if (baby.admintype == 'creator') {
-      this.babies.remove(ev).then(() => console.log('deleted'));
-      this.af.database.list('/Feeding_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
-      this.af.database.list('/Pumping_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
-      this.af.database.list('/Diaper_' + key).remove().then(() => { console.log('feeding record deleted') }).catch((err) => { console.log(err) });
+  added() {
+    this.forceAddDialog = false;
+    this.get_init_count();
+  }
+
+  async refresh_babies() {
+    return  await this.fbs.get_my_babies_once();
+  }
+
+  async get_init_count() {
+    var my_babies = await this.refresh_babies();
+    this.baby_count = Enumerable.from(my_babies).count();
+    if (this.baby_count > 0) {
+      this.my_babies = this.fbs.get_my_babies_obs();
     }
   }
 
-  logoutClicked() {
-    this.af.auth.logout();
-    this.navCtrl.setRoot(LoginPage);
+  async deleteBaby(key) {
+    await this.refresh_babies();
   }
 
   showBaby(id: string) {
@@ -61,73 +49,20 @@ export class ProfilesPage {
   }
 
   newBaby() {
-    this.showAddDialog = true;
     this.forceAddDialog = true;
   }
 
   share(ev: any) {
-    var partnerBabies: FirebaseListObservable<any>;
-    partnerBabies = this.af.database.list('/Babies' + '_' + this.sanitizeEmail(ev.email));
-    partnerBabies.push({
-      babyid: ev.id,
-      admintype: 'admin'
-    });
-    if (this.social.canShareViaEmail()) {
-      let user = firebase.auth().currentUser;
-      this.social.shareViaEmail('body', 'subject', ev.email, [user.email])
-        .then(() => { console.log('success') })
-        .catch((err) => { console.log(err) });
-    }
-    else {
-      console.log('Cannot share via email');
-    }
-    console.log('sharing with ' + ev.email + ' by ' + ev.id);
+    /*
+    load contacts modal
+    select contact
+    click share/cancel
+    refresh();
+    */
   }
 
   addBaby(ev: any) {
-    console.log('in add');
-    var baby: Baby = {
-      name: ev.name,
-      dob: ev.dob,
-      gender: ev.gender,
-      momsname: ev.momsname,
-      imgUrl: ev.imgUrl
-    }
-    let babyRef = this.babies.push(baby);
-    var id = this.mybabies.push({
-      babyid: babyRef.key,
-      admintype: 'creator'
-    });
-    this.showAddDialog = false;
-    this.forceAddDialog = false;
-    this.showBaby(id.key);
-  }
-
-  sanitizeEmail(email: string): string {
-    email = email.trim();
-    email = email.replace(/\./g, "_");
-    email = email.replace(/\$/g, "_");
-    email = email.replace(/\[/g, "_");
-    email = email.replace(/\]/g, "_");
-    email = email.replace(/#/g, "_");
-    email = email.replace(/\//g, "_");
-    return email;
-  }
-
-  getCount(babies: Baby[]): number {
-    if (babies == null || !Enumerable.from(babies).any()) {
-      this.showAddDialog = true;
-      return 0;
-    }
-      this.showAddDialog = false;
-    return Enumerable.from(babies).count();
-  }
-
-  getStarted() {
-    window.localStorage.setItem("name", this.name);
-    console.log(Date.parse(this.dob));
-    window.localStorage.setItem("dob", this.dob);
-    this.navCtrl.push(HomePage);
+    this.refresh_babies();
   }
 
 }

@@ -5,7 +5,7 @@
           <button ion-button menuToggle> <ion-icon name="menu"></ion-icon> </button>
         </ion-col>
         <ion-col col-auto style="color: white;  text-align:center; display: block; margin: auto;">
-          <button ion-button clear style="color: white;" icon-right (click)="changeBaby()">  <h4> {{getTitle(baby | async)}} </h4><ion-icon name="ios-arrow-dropdown"> </ion-icon> </button>
+          <button ion-button clear style="color: white;" icon-right (click)="changeBaby()">  <h4>  </h4><ion-icon name="ios-arrow-dropdown"> </ion-icon> </button>
         </ion-col>
         <ion-col>
           <img style="height:50px; width: 50px; display: block; margin: auto" align="right" src="http://placehold.it/350">
@@ -14,9 +14,10 @@
   </ion-navbar>
 </ion-header>
 
+
 <ion-content>
-  <code-push> </code-push>
   <date-selector (date)="setDate($event)"> </date-selector>
+    
   <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" (diapering)="showDiaperDialog()">
   </event-selector>
 
@@ -68,7 +69,7 @@
   </ion-card>
   <!-- End Add Diaper Record -->
 
-  <!-- Begin  Feeding Summary -->
+  <!-- Begin  Feeding Summary - ->
   <ion-card color="primary">
     <ion-card-header>
       Feeding
@@ -101,7 +102,7 @@
   </ion-card>
   <!-- End Feeding Summary -->
 
-  <!-- Begin Pumping Summary -->
+  <!-- Begin Pumping Summary - ->
   <ion-card color="secondary">
     <ion-card-header>
       Pumping
@@ -132,7 +133,7 @@
   </ion-card>
   <!-- End Pumping Summary -->
 
-  <!-- Begin Diaper Summary -->
+  <!-- Begin Diaper Summary - ->
   <ion-card color="dark">
     <ion-card-header>
       Diaper

@@ -1,0 +1,16 @@
+<ion-content padding>
+  <ion-list>
+    <ion-item>
+      <ion-label color="primary">Feeding Type</ion-label>
+      <ion-select [(ngModel)]="feedingType">
+        <ion-option value="breastfeeding">Breast Feeding</ion-option>
+        <ion-option value="pumped">Pumped Breast Milk</ion-option>
+        <ion-option value="formula">Formula</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-card-content *ngIf="feedingType == 'breastfeeding' || 'pumped' || 'formula'">
+    <time-date-vol volumelabel="{{getVolumeLabel(feedingType)}}" defaultDate="{{feedingDate}}" defaultVolume="{{feedingVolume}}" (save)="saveFeeding($event, editType, key)"></time-date-vol>
+  </ion-card-content>
+</ion-content>

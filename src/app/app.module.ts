@@ -10,6 +10,9 @@ import { HomePage } from '../pages/home/home';
 import {ProfilesPage} from '../pages/profiles/profiles';
 import {LoginPage} from '../pages/login/login';
 import { FriendsPage } from '../pages/friends/friends';
+import { FeedingPage } from '../pages/feeding/feeding';
+import { DiaperPage } from '../pages/diaper/diaper';
+import { PumpingPage } from '../pages/pumping/pumping';
 
 // Import All Components
 import {BabyComponent} from '../components/baby/baby';
@@ -20,6 +23,7 @@ import { AddBabyComponent } from '../components/addbaby/addbaby';
 import { DateSelectorComponent } from '../components/date-selector/date-selector';
 import { EventSelectorComponent } from '../components/event-selector/event-selector';
 import { CodePushComponent } from '../components/code-push/code-push';
+import { ImageUploaderComponent } from '../components/image-uploader/image-uploader';
 
 import {AngularFireModule} from 'angularfire2';
 
@@ -37,7 +41,10 @@ const pages: any[] = [
     HomePage,
     ProfilesPage,
     LoginPage,
-    FriendsPage
+    FriendsPage,
+    FeedingPage,
+    DiaperPage,
+    PumpingPage
 ]
 
 const components: any[] = [
@@ -48,7 +55,8 @@ const components: any[] = [
     AddBabyComponent,
     DateSelectorComponent,
     EventSelectorComponent,
-    CodePushComponent  
+    CodePushComponent,
+    ImageUploaderComponent
 ];
 
 @NgModule({

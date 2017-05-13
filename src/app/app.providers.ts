@@ -12,12 +12,15 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { SMS } from '@ionic-native/sms';
 import { Contacts } from '@ionic-native/contacts';
 import { MyContacts } from '../providers/my-contacts';
+import { FirebaseService } from '../providers/firebase-service';
+import { ImageUploaderService } from '../providers/image-uploader-service';
 // Import Mocks
 import { LocalNotificationsMock } from '../mocks/localnotifications.mock';
 import { CameraMock } from '../mocks/camera.mock';
 import { SocialSharingMock } from '../mocks/socialsharing.mock';
 import { SMSMock } from '../mocks/sms.mock';
 import { MyContactsMock } from '../mocks/contacts.mock';
+import { FirebaseMock } from '../mocks/firebase.mock';
 
 import { Utils } from '../library/utils';
 
@@ -33,6 +36,8 @@ export class AppProviders {
             CodePush,
             Utils,
             Contacts,
+            ImageUploaderService,
+            { provide: FirebaseService, useClass: FirebaseMock},
             { provide: SMS, useClass: SMSMock},
             { provide: MyContacts, useClass: MyContactsMock},
             { provide: LocalNotifications, useClass: LocalNotificationsMock},
@@ -53,6 +58,8 @@ export class AppProviders {
             Contacts,
             Utils,
             CodePush,
+            FirebaseService,
+            ImageUploaderService,
             {provide: ErrorHandler, useClass: IonicErrorHandler}
             ];  
         } 
