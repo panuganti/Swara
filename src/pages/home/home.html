@@ -1,14 +1,14 @@
 <ion-header>
-  <ion-navbar color="danger">
+  <ion-navbar color="truered">
     <ion-grid> <ion-row row-sm> 
         <ion-col style="display: block; margin: auto; padding: 2px 0">
           <button ion-button menuToggle> <ion-icon name="menu"></ion-icon> </button>
         </ion-col>
         <ion-col col-auto style="color: white;  text-align:center; display: block; margin: auto;">
-          <button ion-button clear style="color: white;" icon-right (click)="changeBaby()">  <h4>  </h4><ion-icon name="ios-arrow-dropdown"> </ion-icon> </button>
+          <button ion-button clear style="color: white;" icon-right (click)="changeBaby()">  <h4> {{babyname}} </h4><ion-icon name="ios-arrow-dropdown"> </ion-icon> </button>
         </ion-col>
         <ion-col>
-          <img style="height:50px; width: 50px; display: block; margin: auto" align="right" src="http://placehold.it/350">
+          <img style="height:50px; width: 50px; display: block; margin: auto" align="right" src="{{babyImg}}">
         </ion-col>
       </ion-row> </ion-grid>
   </ion-navbar>
@@ -21,6 +21,7 @@
   <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" (diapering)="showDiaperDialog()">
   </event-selector>
 
+<!--
   <ion-card *ngIf="showAlarmCard">
     <ion-content>
       <time-date defaultDate="{{alarmTime}}"> </time-date>
@@ -30,8 +31,8 @@
       <button ion-button> </button>
     </ion-content>
   </ion-card>
-
-  <!-- Begin Add Feeding Record -->
+-->
+  <!-- Begin Add Feeding Record - ->
   <ion-card *ngIf="showFeeding">
     <ion-card-header> Feeding </ion-card-header>
     <ion-list>
@@ -54,22 +55,22 @@
       <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{feedingDate}}" defaultVolume="{{feedingVolume}}" (save)="saveFeeding($event,'formula', editType, key)"></time-date-vol>
     </ion-card-content>
   </ion-card>
-  <!-- End Add Feeding Record -->
+  <!-- End Add Feeding Record - ->
 
-  <!-- Begin Add Pumping Record -->
+  <!-- Begin Add Pumping Record - ->
   <ion-card *ngIf="showPumping">
     <ion-card-header> Pumping </ion-card-header>
     <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{pumpingDate}}" defaultVolume="{{pumpingVolume}}" (save)="savePumping($event, editType, key)"></time-date-vol>
   </ion-card>
   <!-- End Add Pumping Record -->
 
-  <!-- Begin Add Diaper Record -->
+  <!-- Begin Add Diaper Record - ->
   <ion-card *ngIf="showDiaper">
     <diaper defaultDate="{{diaperDate}}" defaultType="{{diaperType}}" (save)="saveDiaper($event, editType, key)"> </diaper>
   </ion-card>
   <!-- End Add Diaper Record -->
 
-  <!-- Begin  Feeding Summary - ->
+  <!-- Begin  Feeding Summary -->
   <ion-card color="primary">
     <ion-card-header>
       Feeding

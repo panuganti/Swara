@@ -6,6 +6,7 @@ import { FirebaseListObservable } from 'angularfire2';
 import { Baby } from '../../library/entities';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { FirebaseService } from '../../providers/firebase-service';
+import {Observable} from 'rxjs/Rx';
 
 @Component({
   selector: 'page-profiles',
@@ -14,7 +15,7 @@ import { FirebaseService } from '../../providers/firebase-service';
 export class ProfilesPage {
   forceAddDialog: boolean = false;
   baby_count: number = 0;
-  my_babies: FirebaseListObservable<any>;
+  my_babies: Promise<any>;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public fbs: FirebaseService, public social: SocialSharing, public loading: LoadingController) { }
@@ -23,28 +24,26 @@ export class ProfilesPage {
     this.get_init_count();
   }
 
-  added() {
+  async added() {
     this.forceAddDialog = false;
-    this.get_init_count();
+    await this.get_init_count();
   }
 
   async refresh_babies() {
-    return  await this.fbs.get_my_babies_once();
+    this.my_babies = this.fbs.get_my_babies_once();
   }
 
   async get_init_count() {
-    var my_babies = await this.refresh_babies();
-    this.baby_count = Enumerable.from(my_babies).count();
-    if (this.baby_count > 0) {
-      this.my_babies = this.fbs.get_my_babies_obs();
-    }
+    await this.refresh_babies();
+    this.baby_count = Enumerable.from(await this.my_babies).count();
   }
 
   async deleteBaby(key) {
-    await this.refresh_babies();
+    await this.get_init_count();
   }
 
   showBaby(id: string) {
+    console.log(id);
     this.navCtrl.setRoot(HomePage, { id: id });
   }
 
@@ -53,16 +52,10 @@ export class ProfilesPage {
   }
 
   share(ev: any) {
-    /*
-    load contacts modal
-    select contact
-    click share/cancel
-    refresh();
-    */
   }
 
-  addBaby(ev: any) {
-    this.refresh_babies();
+  async addBaby(ev: any) {
+    await this.get_init_count();
   }
 
 }

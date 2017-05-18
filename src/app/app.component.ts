@@ -9,8 +9,6 @@ import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
 import { FriendsPage } from '../pages/friends/friends';
 import { Utils } from '../library/utils';
-//import { AngularFire, AuthMethods, AuthProviders } from 'angularfire2';
-//import * as firebase from 'firebase'
 import { FirebaseService } from '../providers/firebase-service';
 
 @Component({
@@ -59,13 +57,14 @@ export class MyApp {
     window.localStorage.removeItem('secret');
     window.localStorage.removeItem('email');
     window.localStorage.removeItem('email_from_phone');
+    window.localStorage.removeItem('user');
   }
 
   async set_root() {
     //await this.reset();
-    var user = this.fbs.get_user();
-    if (user) { await this.routeToHomeOrProfilesPage(); }
-    if (!user) {
+    var is_logged_in = this.fbs.is_logged_in();
+    if (is_logged_in) { await this.routeToHomeOrProfilesPage(); }
+    if (!is_logged_in) {
       var phone = window.localStorage.getItem('phone');
       var secret = window.localStorage.getItem('secret');
       var email_from_phone = window.localStorage.getItem('email_from_phone');
@@ -93,7 +92,7 @@ export class MyApp {
   async routeToHomeOrProfilesPage() {
     var mybabies = await this.fbs.get_my_babies_once();
     if (mybabies != null) {
-      this.rootPage = ProfilesPage;//HomePage
+      this.rootPage = HomePage;
       return;
     }
     this.rootPage = ProfilesPage;

@@ -37,6 +37,7 @@ export class ImageUploaderComponent {
 
   async getImage(coptions: CameraOptions) {
     try {
+      debugger;
       this.presentLoading("Loading from gallery")
       let data = await this.camera.getPicture(coptions);
       console.log(data);

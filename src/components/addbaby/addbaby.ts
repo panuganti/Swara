@@ -48,29 +48,6 @@ export class AddBabyComponent {
     this.enableAddButton();
   }
 
-/*
-  reset() {
-    this.name = '';
-    this.dob = moment().format();
-    this.gender = '';
-    this.momsname = '';
-    this.addbuttonenabled = false;
-    this.imgUrl = '';
-    this.showImg = false;
-  }
-
-  emit() {
-    this.add.emit({
-      name: this.name,
-      dob: this.dob,
-      momsname: this.momsname,
-      gender: this.gender,
-      imgUrl: "dummy"
-    });
-    this.reset();
-  }
-*/
-
   addbuttonenabled: boolean = false;
   enableAddButton() {
     if ((this.gender == 'm' || this.gender == 'f') && (this.name) && (this.name.length > 0) && (this.momsname) && (this.momsname.length > 0)) {
@@ -89,13 +66,13 @@ export class AddBabyComponent {
       momsname: this.momsname,
       imgUrl: this.image
     }
-    let babyref = this.fbs.get_babies_obs().push(baby);
+    let babyref = this.fbs.push_baby(baby);
     var new_baby: MyBaby = {
       admintype: 'creator',
-      babyid: babyref.key,
+      babyid: babyref,
       default: false
     };
-    this.fbs.get_my_babies_obs().push(new_baby)
+    this.fbs.push_my_baby(new_baby)
     this.added.emit();
   }
 
@@ -124,11 +101,14 @@ export class AddBabyComponent {
       this.presentLoading("Loading from gallery")
       let data = await this.camera.getPicture(coptions);
       this.image = "data:image/jpeg;base64," + data;
+      this.image = await this.uploader.upload_image(this.image);
       this.showImg = true;
-      this.image = await this.uploader.upload_image(data);
       this.loader.dismiss();
     }
-    catch (err) { console.log(err); this.loader.dismiss(); }
+    catch (err) { 
+      console.log(err); 
+      this.loader.dismiss(); 
+    }
   }
 
   async getFromGallery() {

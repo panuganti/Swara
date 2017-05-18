@@ -1,14 +1,13 @@
 // Start todo comment
-export interface TimeVolType  extends TimeVol {
-    type: string;
-}
-
-export interface TimeVol extends Time {
+export interface TimeVolType  extends TimeType {
     volume: number;
 }
 
-export interface Diaper extends Time {
-    type: string
+export interface TimeType extends Time {
+    type: string;
+}
+
+export interface Diaper extends TimeType {
 }
 
 export interface Time {
@@ -17,23 +16,26 @@ export interface Time {
 }
 // End todo comment
 
-export interface Log {
-    type: LogType,
-    time: string;
-    date: string;
-    volume: number;
+
+export interface NursingLog extends TimeVolType {   
 }
 
-export enum LogType {
-    Feeding,
-    Diaper,
-    Pumping
+export interface PumpingLog extends TimeVolType {    
+}
+
+export interface DiaperLog extends Time {    
+    type: string;
 }
 
 export interface MyBaby {
     admintype: string;
     babyid: string;
     default: boolean;
+}
+
+
+export interface TimeVol extends Time {
+    volume: number;
 }
 
 export interface Baby {

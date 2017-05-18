@@ -1,3 +1,17 @@
+<ion-header style="background-color: red">
+  <ion-grid>
+    <ion-row row-sm>
+      <ion-col col-auto style="color: white;  text-align:center; display: block; margin: auto;">
+        <ion-title><span style="color:white">Nursing</span></ion-title>
+      </ion-col>
+      <ion-col>
+        <ion-buttons end>
+          <button ion-button (click)="cancel()" clear><span style="color:white"> Cancel </span></button>
+        </ion-buttons>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-header>
 <ion-content padding>
   <ion-list>
     <ion-item>
@@ -9,8 +23,10 @@
       </ion-select>
     </ion-item>
   </ion-list>
-
-  <ion-card-content *ngIf="feedingType == 'breastfeeding' || 'pumped' || 'formula'">
-    <time-date-vol volumelabel="{{getVolumeLabel(feedingType)}}" defaultDate="{{feedingDate}}" defaultVolume="{{feedingVolume}}" (save)="saveFeeding($event, editType, key)"></time-date-vol>
-  </ion-card-content>
+  <ion-card>
+    <ion-card-content>
+      <time-date-vol volumelabel="{{getVolumeLabel(feedingType)}}" defaultDate="{{getDate()}}" defaultVolume="{{feedingVolume}}"
+        (save)="saveFeeding($event, editType, key)"></time-date-vol>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

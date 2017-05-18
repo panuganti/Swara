@@ -1,3 +1,18 @@
+<ion-header style="background-color: red">
+  <ion-grid>
+    <ion-row row-sm>
+      <ion-col col-auto style="color: white;  text-align:center; display: block; margin: auto;">
+        <ion-title> <span style="color:white">Diaper</span> </ion-title>
+      </ion-col>
+      <ion-col>
+        <ion-buttons end>
+          <button ion-button (click)="cancel()" clear><span style="color:white"> Cancel </span></button>
+        </ion-buttons>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-header>
+
 <ion-content padding>
-  <diaper defaultDate="{{diaperDate}}" defaultType="{{diaperType}}" (save)="saveDiaper($event, editType, key)"> </diaper>
+  <diaper defaultDate="{{getDate()}}" defaultType="{{diaperType}}" (save)="saveDiaper($event, editType, key)"> </diaper>
 </ion-content>

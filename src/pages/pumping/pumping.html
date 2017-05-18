@@ -1,4 +1,18 @@
+<ion-header style="background-color: red">
+  <ion-grid>
+    <ion-row row-sm>
+      <ion-col col-auto style="color: white;  text-align:center; display: block; margin: auto;">
+        <ion-title> <span style="color:white">Pumping</span> </ion-title>
+      </ion-col>
+      <ion-col>
+        <ion-buttons end>
+          <button ion-button (click)="cancel()" clear><span style="color:white"> Cancel </span></button>
+        </ion-buttons>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-header>
+
 <ion-content>
-  <ion-label> Pumping </ion-label>
-<time-date-vol  volumelabel="Volume (in ml)" defaultDate="{{pumpingDate}}" defaultVolume="{{pumpingVolume}}" (save)="savePumping($event, editType, key)"> </time-date-vol>
+<time-date-vol  volumelabel="Volume (in ml)" defaultDate="{{getDate()}}" defaultVolume="{{pumpingVolume}}" (save)="savePumping($event, editType, key)"> </time-date-vol>
 </ion-content>

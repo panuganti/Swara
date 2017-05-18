@@ -15,6 +15,25 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
+@font-face {
+	font-family: 'Circular';
+	src: url('../assets/resources/ASCircularWeb-Book.woff2') format('woff2'), url('../assets/resources/ASCircularWeb-Book.woff') format("woff");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Circular';
+	src: url('../assets/resources/ASCircularWeb-Book.woff2') format('woff2'), url('../assets/resources/ASCircularWeb-Book.woff2') format("woff");
+	font-weight: bold;
+	font-style: normal;
+}
+
+
+body, span, button, h1, h2, h3, h4, h5, h6, p, ion-item, ion-title {
+font-family: Circular, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .pull-left {
   float: left;
 }

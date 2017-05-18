@@ -94,11 +94,10 @@ export class LoginPage {
 
   async add_user() {
     try {
-      var phone = window.localStorage.getItem('phone');
-      var users = await this.fbs.get_users_once();
-      if (users == null) {return;}
-      var new_user: User = { phone: phone, email: this.email };
-      await this.fbs.get_users().push(new_user);
+      var users = await this.fbs.get_users_once(this.phone.toString());
+      if (users != null) {return;}
+      var new_user = { phone: this.phone.toString(), email: this.email };
+      await this.fbs.push_user(new_user);
     }
     catch (err) {
       console.log(err);

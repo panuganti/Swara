@@ -11,12 +11,11 @@
 
 <ion-content>
   <addbaby *ngIf="forceAddDialog" (added)="added()"> </addbaby>
-
   <div class="center" *ngIf="baby_count==0"> Add Baby to get started </div>
 
   <baby *ngFor="let baby of my_babies | async" (share)="share($event)" 
     (delete)="deleteBaby()" (show)="showBaby($event)"
-    id="{{baby.babyid}}"> </baby>
+    id="{{baby.babyid}}" admin="{{baby.admintype == 'creator'}}"> </baby>
 
   <ion-fab right bottom>
     <button ion-fab color="danger" (click)="newBaby()"> 

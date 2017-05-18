@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { FirebaseService } from '../../providers/firebase-service';
+import { PumpingLog, TimeVol } from '../../library/entities';
+import * as moment from 'moment';
 
 @Component({
   selector: 'page-pumping',
@@ -8,13 +11,26 @@ import { NavController, NavParams } from 'ionic-angular';
 export class PumpingPage {
 pumpingDate: string;
 pumpingVolume: number;
+  id: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+  public fbs: FirebaseService, public viewCtrl: ViewController) {}
 
   ionViewDidLoad() {
+    this.id = this.navParams.get('id');
   }
 
-  savePumping(ev, editType, key) {
-    // save and dismiss
+  cancel() {
+    this.viewCtrl.dismiss();
+  }
+
+  getDate() {
+    return moment().subtract(15, 'm').format();
+  }
+
+  savePumping(ev: TimeVol, editType, key) {
+    let log: PumpingLog = { type: 'both', volume: ev.volume, time: ev.time, date: ev.date };
+    this.fbs.push_pumping_log(this.id, log);
+    this.viewCtrl.dismiss();
   }
 }

@@ -1,21 +1,20 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, Alert, ModalController } from 'ionic-angular';
-import { AngularFire, FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2';
-import { TimeVolType, TimeVol, Diaper } from '../../library/entities';
+import { NavController, NavParams, AlertController, Alert, ModalController, Modal } from 'ionic-angular';
+import { TimeVolType } from '../../library/entities';
 
 import { ProfilesPage } from '../profiles/profiles';
 import { LocalNotifications } from '@ionic-native/local-notifications';
-import { LoginPage } from '../login/login';
 import { FeedingPage } from '../feeding/feeding';
 import { DiaperPage } from '../diaper/diaper';
 import { PumpingPage } from '../pumping/pumping';
 
 import { Utils } from '../../library/utils';
 import { MyBaby, Baby } from '../../library/entities';
+import { FirebaseService } from '../../providers/firebase-service';
 
+import { Observable } from 'rxjs/Rx';
 import * as Enumerable from 'linq';
 import * as moment from 'moment';
-import * as firebase from 'firebase';
 
 @Component({
   selector: 'page-home',
@@ -28,18 +27,25 @@ export class HomePage {
   feedingAlert: Alert;
   pumpingAlert: Alert;
   diaperAlert: Alert;
-  log: FirebaseListObservable<any>;
+  log: Observable<any>;
   pageDate: string;
+  babyname: string;
+  babyImg: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController,
-    public af: AngularFire, public localNotifications: LocalNotifications, public utils: Utils, public modal: ModalController) {
+    public fbs: FirebaseService, public localNotifications: LocalNotifications, public utils: Utils, public modal: ModalController) {
     this.init();
   }
 
   async init() {
     this.id = this.navParams.get("id");
     this.pageDate = moment().format();
-    this.set_default(this.id, this.pageDate);
+    this.mybabies = await this.fbs.get_my_babies_once();
+    this.babySelector = await this.create_baby_selector(this.mybabies, this.id);
+    await this.set_baby(this.id);
+  }
+
+  refresh() {
   }
 
   changeBaby() {
@@ -52,10 +58,12 @@ export class HomePage {
     alert.addButton('Cancel');
     alert.addButton({
       text: 'OK',
-      handler: data => { this.set_default(data); }
+      handler: data => { this.set_baby(data); }
     });
     Enumerable.from(babies).select(async b => {
-      let baby: Baby = await this.af.database.list('/Babies/' + b.babyid).$ref.once('value');
+      let babies: Baby[] = await this.fbs.get_baby_once(b.babyid);
+      if (!Enumerable.from(babies).any()) { return; }
+      let baby: Baby = Enumerable.from(babies).first();
       alert.addInput({
         type: 'radio', label: baby.name, value: b.babyid, checked: (id != null && id == b.babyid) ? true : b.default
       })
@@ -63,59 +71,42 @@ export class HomePage {
     return alert;
   }
 
-  mybabies: MyBaby[]; // TODO: Move to singleton
-  // Set baby, and selector; Load all data
-  async set_default(id?: string, date?: string) {
-    let user = firebase.auth().currentUser;
-    this.mybabies = await this.af.database
-      .list('/Babies' + '_' + this.utils.sanitize_email(user.email)) // TODO: Change to phone
-      .$ref.once('value');
-
-    this.babySelector = await this.create_baby_selector(this.mybabies, id); 
-    await this.set_baby();
+  getTitle(baby) {
+    if (baby == null) { return ''; }
+    if (baby.name.length > 15) { return baby.name.substring(0, 12) + '...'; }
+    else { baby.name }
   }
 
-  async set_baby() {
-    if (Enumerable.from(this.mybabies).any(b => b.default)) {
-      this.id = Enumerable.from(this.mybabies).first(b => b.default).babyid;
-      this.baby = await this.af.database.list('/Babies/' + this.id).$ref.once('value');
+  mybabies: MyBaby[]; // TODO: Move to singleton
+
+  async set_baby(id?: string) {
+    this.set_default_id(id);
+    let babies: Baby[] = await this.fbs.get_baby_once(this.id);
+    if (Enumerable.from(babies).any()) {
+      this.baby = Enumerable.from(babies).first();
+      this.babyname = this.baby.name;
+      this.babyImg = this.baby.imgUrl;
     }
     await this.resetLists();
   }
 
+  private set_default_id(id?: string) {
+    if (Enumerable.from(this.mybabies).any(b => b.default)) {
+      this.id = Enumerable.from(this.mybabies).first(b => b.default).babyid;
+    }
+    else if (Enumerable.from(this.mybabies).count() == 1) {
+      this.id = Enumerable.from(this.mybabies).first().babyid;
+    }
+    if (Enumerable.from(this.mybabies).any(b => b.babyid == id)) {
+      this.id = Enumerable.from(this.mybabies).first(b => b.babyid == id).babyid;
+    }
+  }
+
   async resetLists() {
-    var query = { orderByChild: "date", equalTo: this.getDate(this.pageDate) };
-    var yestquery = { orderByChild: "date", equalTo: this.getDate(moment(this.pageDate).subtract(1, 'd').format()) };
-    this.log = this.af.database.list('/Log_' + this.id, { query: query });
-    let yestlog = await this.af.database.list('/Log_' + this.id, { query: yestquery }).$ref.once('value');
+    //let yest = this.getDate(moment(this.pageDate).subtract(1, 'd').format());
+    //this.log = this.fbs.get_log(this.id);
+    //this.yestlog = await this.fbs.get_log_once(this.id, yest);
   }
-
-  create_feeding_dialog() {
-    let feedingModal = this.modal.create(FeedingPage);
-    feedingModal.onDidDismiss((data) => {console.log(data);
-      this.log.push(data);
-    });
-    feedingModal.present();
-  }
-
-  create_diaper_dialog() {
-    let diaperModal = this.modal.create(DiaperPage);
-    diaperModal.onDidDismiss((data) => {console.log(data);
-          this.log.push(data);
-    });
-    diaperModal.present();    
-  }
-
-  create_pumping_dialog() { 
-    let pumpingModal = this.modal.create(PumpingPage);
-    pumpingModal.onDidDismiss((data) => {console.log(data); 
-          this.log.push(data);
-    });
-    pumpingModal.present();        
-  }
-
-  async create_alarm_dialog() { }
-
 
   setDate(ev) {
     this.pageDate = ev;
@@ -180,6 +171,24 @@ export class HomePage {
     return '';
   }
 
+  showFeedingDialog() {
+    let feedingModal = this.modal.create(FeedingPage, { id: this.id });
+    feedingModal.onDidDismiss((data) => this.refresh());
+    feedingModal.present();
+  }
+
+  showPumpingDialog() {
+    let pumpingModal = this.modal.create(PumpingPage, { id: this.id });
+    pumpingModal.onDidDismiss((data) => this.refresh());
+    pumpingModal.present();
+  }
+
+  showDiaperDialog() {
+    let diaperModal = this.modal.create(DiaperPage, { id: this.id });
+    diaperModal.onDidDismiss((data) => this.refresh());
+    diaperModal.present();
+  }
+
   showNoFeedingText: boolean = false;
   getLastFeedTime(feeding: TimeVolType[], yestfeeding: TimeVolType[]): string {
     if (feeding == null || (Enumerable.from(feeding).count() == 0)) {
@@ -209,7 +218,6 @@ export class HomePage {
   }
 
   showBabies() {
-    console.log('in show babies');
     this.navCtrl.push(ProfilesPage); // TODO: Make it modal
   }
 

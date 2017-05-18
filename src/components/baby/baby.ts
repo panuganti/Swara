@@ -30,21 +30,27 @@ export class BabyComponent {
     this.init();
   }
 
+  do_nothing() {
+    debugger;
+  }
+
   async init() {
-    let baby: any = await this.fbs.get_baby_once(this.id);
+    let baby = await this.fbs.get_baby_once(this.id);
     if (baby && baby != null) {
-      this.name = baby.name;
-      this.dob = baby.dob;
-      this.gender = baby.gender;
-      this.momsname = baby.momsname;
-      this.img = baby.imgUrl;
+      this.name = baby[0].name;
+      this.dob = baby[0].dob;
+      this.gender = baby[0].gender;
+      this.momsname = baby[0].momsname;
+      this.img = baby[0].imgUrl;
     }
   }
 
   async deleteClicked() {
     this.fbs.delete_baby_from_my_babies(this.id);
     if (this.admin) {
-      this.fbs.delete_log(this.id);
+      this.fbs.delete_nursing_log(this.id);
+      this.fbs.delete_pumping_log(this.id);
+      this.fbs.delete_diaper_log(this.id);
       this.fbs.delete_baby(this.id);
     }
       this.delete.emit();

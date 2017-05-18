@@ -1,5 +1,4 @@
 import { FirebaseService } from '../providers/firebase-service';
-import * as firebase from 'firebase';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 
@@ -11,15 +10,9 @@ export class ImageUploaderService {
     private complete_handler = () => { console.log('upload completed'); }
 
     public async upload_image(fileurl: string): Promise<string> {
-        let storage = this.fbs.get_storage_ref();
         let now = Date.now();
         var imgname = 'profile_' + now + '.jpg';
-        var storageref = storage.child('images/' + imgname);
-        var metadata: firebase.storage.UploadMetadata = { contentType: 'image/jpeg' };
-        var uploadTask: firebase.storage.UploadTask = storageref.putString(fileurl, 'base64', metadata);
-        uploadTask.on('state_changed', this.upload_progress, this.error_handler, this.complete_handler);
-        await uploadTask;
-        return uploadTask.snapshot.downloadURL;
+        return await this.fbs.upload_image(imgname, fileurl, this.upload_progress, this.error_handler, this.complete_handler);
     }
 
     private upload_progress = (snapshot) => {
@@ -27,13 +20,6 @@ export class ImageUploaderService {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
-        switch (snapshot.state) {
-            case firebase.storage.TaskState.PAUSED: // or 'paused'
-                console.log('Upload is paused');
-                break;
-            case firebase.storage.TaskState.RUNNING: // or 'running'
-                break;
-        }
     }
 
     private error_handler = (error) => {

@@ -1,8 +1,8 @@
-<ion-card (click)="showClicked()">
+<ion-card>
   <ion-grid class="{{gender}}">
     <ion-row>
       <ion-col>
-        <ion-item>
+        <ion-item  (click)="showClicked()">
           <ion-avatar item-left>
             <img src="{{img}}">
           </ion-avatar>
@@ -10,7 +10,7 @@
           <p> {{dob}} </p>
         </ion-item>
       </ion-col>
-      <ion-col col-auto>
+      <ion-col col-auto (click)="do_nothing()">
         <ion-buttons end>
           <button *ngIf="admin" ion-button icon-only clear (click)="showShare()"> 
               <ion-icon name="share"> </ion-icon>

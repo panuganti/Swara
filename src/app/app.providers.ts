@@ -38,6 +38,7 @@ export class AppProviders {
             Contacts,
             ImageUploaderService,
             { provide: FirebaseService, useClass: FirebaseMock},
+            //FirebaseService,
             { provide: SMS, useClass: SMSMock},
             { provide: MyContacts, useClass: MyContactsMock},
             { provide: LocalNotifications, useClass: LocalNotificationsMock},
