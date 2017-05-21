@@ -26,6 +26,8 @@ export interface NursingLog extends TimeVolType {
 }
 
 export interface PumpingLog extends TimeVolType {
+    left_volume?: number;
+    right_volume?: number;
 }
 
 export interface DiaperLog extends Diaper {  

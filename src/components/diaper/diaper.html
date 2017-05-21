@@ -7,5 +7,8 @@
   </ion-select>
 </ion-item>
 <time-date defaultDate="{{inputDate}}" (timedate)="updatetimedate($event)"> </time-date>
-<ion-textarea [(ngModel)]="notes" placeholder="Notes"> </ion-textarea>
+<ion-item>
+  <ion-label floating color="primary">Notes </ion-label>
+<ion-textarea [(ngModel)]="notes"> </ion-textarea>
+</ion-item>
 <button ion-button block [disabled]="type==null || type=='' || time == null || date ==null" (click)="saveClicked()" color="dark"> Save </button>

@@ -15,31 +15,33 @@
 
 <ion-content>
   <time-date defaultDate="{{getDate()}}" (timedate)="updatetimedate($event)"> </time-date>
-  <ion-grid>
+  <ion-item no-lines>
+    <ion-label>Enter Seperately for Both Sides</ion-label>
+    <ion-checkbox [(ngModel)]="seperate" checked="true"></ion-checkbox>
+  </ion-item>
+  <ion-grid *ngIf="seperate">
     <ion-row>
-      <ion-col>
+      <ion-col width-50>
         <ion-item>
-          <ion-label floating color="primary">Volume (in ml)</ion-label>
-          <ion-input type="number" [(ngModel)]="volume"> </ion-input>
+          <ion-label floating color="primary">Left Volume(in ml)</ion-label>
+          <ion-input type="number" [(ngModel)]="left_volume"> </ion-input>
         </ion-item>
       </ion-col>
-      <ion-col>
+      <ion-col width-50>
         <ion-item>
-          <ion-label floating color="primary">Volume (in ml)</ion-label>
-          <ion-input type="number" [(ngModel)]="volume"> </ion-input>
-        </ion-item>
-      </ion-col>
-      <ion-col>
-        <ion-item>
-          <ion-label floating color="primary">Volume (in ml)</ion-label>
-          <ion-input type="number" [(ngModel)]="volume"> </ion-input>
+          <ion-label floating color="primary">Right Volume(in ml)</ion-label>
+          <ion-input type="number" [(ngModel)]="right_volume"> </ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
+  <ion-item *ngIf="!seperate">
+    <ion-label floating color="primary">Volume from Both (in ml)</ion-label>
+    <ion-input type="number" [(ngModel)]="both_volume"> </ion-input>
+  </ion-item>
   <ion-item>
     <ion-textarea [(ngModel)]="notes" placeholder="Notes"> </ion-textarea>
   </ion-item>
-  <button ion-button block [disabled]="time==null || date==null || volume==0 || volume==null" (click)="saveClicked()" color="dark"> Save </button>
+  <button ion-button block [disabled]="time==null || date==null || (seperate && !(left_volume>0)) || (seperate && !(right_volume>0)) || (!seperate && !(both_volume>0))" (click)="savePumping()" color="dark"> Save </button>
 
 </ion-content>

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FirebaseService } from '../../providers/firebase-service';
-import { PumpingLog, TimeVol } from '../../library/entities';
+import { PumpingLog,  Time } from '../../library/entities';
 import * as moment from 'moment';
 
 @Component({
@@ -9,12 +9,19 @@ import * as moment from 'moment';
   templateUrl: 'pumping.html'
 })
 export class PumpingPage {
-pumpingDate: string;
-pumpingVolume: number;
+  pumpingDate: string;
+  both_volume: number;
+  left_volume: number;
+  right_volume: number;
+  date: string;
+  time: string;
   id: string;
+  notes: string;
+  seperate: boolean = true;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, 
-  public fbs: FirebaseService, public viewCtrl: ViewController) {}
+
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+    public fbs: FirebaseService, public viewCtrl: ViewController) { }
 
   ionViewDidLoad() {
     this.id = this.navParams.get('id');
@@ -25,11 +32,19 @@ pumpingVolume: number;
   }
 
   getDate() {
-    return moment().subtract(15, 'm').format();
+    let datetime = moment().subtract(15, 'm').format();
+    this.date = datetime;
+    this.time = datetime;
+    return datetime;
   }
 
-  savePumping(ev: TimeVol, editType, key) {
-    let log: PumpingLog = { type: 'both', volume: ev.volume, time: ev.time, date: ev.date, note: ev.note };
+  updatetimedate(ev: Time) {
+    this.time = ev.time;
+    this.date = ev.date;
+  }
+
+  savePumping() {
+    let log: PumpingLog = { type: this.seperate ? 'seperate' : 'both', volume: this.both_volume, left_volume: this.left_volume, right_volume: this.right_volume, time: this.time, date: this.date, note: this.notes };
     this.fbs.push_pumping_log(this.id, log);
     this.viewCtrl.dismiss();
   }
