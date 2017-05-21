@@ -55,7 +55,16 @@ font-family: Circular, "Helvetica Neue", Helvetica, Arial, sans-serif;
         height: 75px;
         display: block; // Display block is necessary with margin auto to horizontally align in center
         margin: auto;
+        background: rgba(0,0,0, 0.3)
     }
+
+    .center-text {
+        text-align: center;
+        color: white;
+        font-size: 70px;
+        background: rgba(0,0,0, 0.3)
+    }
+
     ion-list.list-full-border {
         @extend .list-no-border;
 

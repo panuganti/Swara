@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, Alert, ModalController, Modal } from 'ionic-angular';
+import { NavController, NavParams, AlertController, Alert, ModalController} from 'ionic-angular';
 import { TimeVolType } from '../../library/entities';
 
 import { ProfilesPage } from '../profiles/profiles';
@@ -41,6 +41,11 @@ export class HomePage {
     this.id = this.navParams.get("id");
     this.pageDate = moment().format();
     this.mybabies = await this.fbs.get_my_babies_once();
+    if (!this.mybabies || this.mybabies == null || this.mybabies.length == 0
+             || (this.mybabies.length > 1 && (this.id == null || !this.id) )) {
+      this.navCtrl.setRoot(ProfilesPage);
+      return;
+    }
     this.babySelector = await this.create_baby_selector(this.mybabies, this.id);
     await this.set_baby(this.id);
   }
@@ -48,7 +53,7 @@ export class HomePage {
   refresh() {
   }
 
-  changeBaby() {
+  async changeBaby() {
     this.babySelector.present();
   }
 
@@ -58,7 +63,7 @@ export class HomePage {
     alert.addButton('Cancel');
     alert.addButton({
       text: 'OK',
-      handler: data => { this.set_baby(data); }
+      handler: async data => { this.set_baby(data); this.babySelector = await this.create_baby_selector(this.mybabies);  }
     });
     Enumerable.from(babies).select(async b => {
       let babies: Baby[] = await this.fbs.get_baby_once(b.babyid);
@@ -72,7 +77,7 @@ export class HomePage {
   }
 
   getTitle(baby) {
-    if (baby == null) { return ''; }
+    if (!baby || baby == null) { return ''; }
     if (baby.name.length > 15) { return baby.name.substring(0, 12) + '...'; }
     else { baby.name }
   }
@@ -118,8 +123,6 @@ export class HomePage {
     var datestring = '' + m.year() + m.month() + m.day();
     return datestring;
   }
-
-
 
   showAlarm(type) {
     this.showAlarmCard = true;
@@ -239,18 +242,6 @@ export class HomePage {
       return 'Pumped ' + this.getTimeInHoursAndMins(lastelement.time);
     }
   }
-
-  /*
-    toggleFeeding() {
-      this.expandFeedingList = !this.expandFeedingList;
-    }
-    togglePumping() {
-      this.expandPumpingList = !this.expandPumpingList;
-    }
-    toggleDiapering() {
-      this.expandDiaperList = !this.expandDiaperList;
-    }
-  */
 
   getUnits(feed: any): string {
     if (feed.type == 'breastfeeding') {

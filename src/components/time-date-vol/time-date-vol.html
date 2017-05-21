@@ -2,5 +2,6 @@
 <ion-item>
   <ion-label floating color="primary">{{volumelabel}} </ion-label>
   <ion-input type="number" [(ngModel)]="volume"> </ion-input>
+  <ion-textarea [(ngModel)]="notes" placeholder="Notes"> </ion-textarea>
 </ion-item>
-<button ion-button block [disabled]="time==null || date==null || volume==0 || volume==null" (click)="saveClicked()" color="primary"> Save </button>
+<button ion-button block [disabled]="time==null || date==null || volume==0 || volume==null" (click)="saveClicked()" color="dark"> Save </button>

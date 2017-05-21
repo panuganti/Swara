@@ -1,10 +1,14 @@
 <ion-menu [content]="content">
   <ion-content class="menu-left">
     <div padding class="menu-left menu-bg">
-      <a menuClose>
-        <img class="profile-picture" src="https://lorempixel.com/400/400/people/3">
-        <h4 ion-text color="light" style="text-align: center">Anonymous</h4>
-      </a>
+      <a menuClose (click)="goToMyProfilePage()">
+        <img class="profile-picture" *ngIf="profileImg" src="{{profileImg}}">
+        <div class="center-text">
+            <ion-icon name="ios-camera-outline"> </ion-icon>
+        </div>
+           <h4 ion-text color="light" *ngIf="!name" style="text-align: center"> {{email}} </h4> 
+        <h4 ion-text color="light" *ngIf="name" style="text-align: center"> {{name}} </h4>
+        </a>
     </div>
 
     <ion-list>
@@ -14,6 +18,7 @@
         <ion-badge color="danger" item-right *ngIf="page.count">{{ page.count }}</ion-badge>
       </button>
     </ion-list>
+    <hr>
   </ion-content>
 </ion-menu>
 <code-push> </code-push>

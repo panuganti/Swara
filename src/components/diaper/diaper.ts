@@ -9,12 +9,14 @@ export class DiaperComponent {
   type: string;
   time: string;
   date: string;
+  notes: string;
   inputDate: string;
   disabled: boolean = true;
 
   @Input() defaultDate: string;
   @Input() defaultType: string;
   @Output() save: EventEmitter<Diaper> = new EventEmitter<Diaper>();
+  @Input() note: string;
 
 
   constructor() {
@@ -25,6 +27,7 @@ export class DiaperComponent {
     this.type = this.defaultType;
     this.time = this.defaultDate;
     this.date = this.defaultDate;
+    this.notes = this.note;
   }
 
   updatetimedate(ev: Time) {
@@ -36,7 +39,8 @@ export class DiaperComponent {
     this.save.emit({
       time: this.time,
       date: this.date,
-      type: this.type
+      type: this.type,
+      note: this.notes
     });
   }
 

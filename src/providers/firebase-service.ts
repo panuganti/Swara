@@ -65,7 +65,7 @@ export class FirebaseService {
   }
 
   async push_user(user: User): Promise<void> {
-    await this._get_users().push(user);
+     await this._get_users().push(user);
   }
 
   push_nursing_log(id: string, log: NursingLog) {
@@ -77,7 +77,7 @@ export class FirebaseService {
   }
 
   push_diaper_log(id: string, log: DiaperLog) {
-    this._get_diaper_log(id).push(log);
+     this._get_diaper_log(id).push(log);
   }
 
   logout(): Promise<void> {
@@ -121,6 +121,12 @@ export class FirebaseService {
     await my_baby.remove();
   }
 
+  async update_user(phone: string, user) {
+    let user_once = await this._get_users().$ref.orderByChild('phone').equalTo(phone).once('value');
+    debugger;
+    await this._get_users().update(user_once.key, user);
+  }
+
   async get_baby_once(key: string): Promise<any> {
     return (await this._get_baby_obs(key).$ref.once('value')).val();
   }
@@ -151,11 +157,6 @@ export class FirebaseService {
   async delete_diaper_log(key: string): Promise<void> {
     await this._get_diaper_log(key).remove();
   }
-
-  private get_users(): Observable<any[]> {
-    return this.af.database.list('/Users');
-  }
-
 
   async get_users_once(phone: string): Promise<any> {
     return (await this._get_users().$ref.orderByChild('phone').equalTo(phone).once('value')).val();

@@ -24,7 +24,7 @@ export class DiaperPage {
   }
 
   saveDiaper(ev, editType, key) {
-    let log: DiaperLog = { type: this.diaperType,  time: ev.time, date: ev.date };
+    let log: DiaperLog = { type: this.diaperType,  time: ev.time, date: ev.date, note: ev.note, $ref:'hello' };
     this.fbs.push_diaper_log(this.id, log);
     this.viewCtrl.dismiss();
   }
@@ -32,6 +32,5 @@ export class DiaperPage {
   cancel() {
     this.viewCtrl.dismiss();
   }
-
 
 }

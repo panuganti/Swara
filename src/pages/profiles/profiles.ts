@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController, Loading } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ModalController } from 'ionic-angular';
 import { HomePage } from '../home/home';
+import { AddbabyModalPage } from '../addbaby-modal/addbaby-modal';
 import * as Enumerable from 'linq';
-import { FirebaseListObservable } from 'angularfire2';
-import { Baby } from '../../library/entities';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { FirebaseService } from '../../providers/firebase-service';
-import {Observable} from 'rxjs/Rx';
+
 
 @Component({
   selector: 'page-profiles',
@@ -17,8 +16,8 @@ export class ProfilesPage {
   baby_count: number = 0;
   my_babies: Promise<any>;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,
-    public fbs: FirebaseService, public social: SocialSharing, public loading: LoadingController) { }
+  constructor(public navCtrl: NavController, public navParams: NavParams, public modal: ModalController,
+        public fbs: FirebaseService, public social: SocialSharing, public loading: LoadingController) { }
 
   ionViewDidLoad() {
     this.get_init_count();
@@ -38,17 +37,18 @@ export class ProfilesPage {
     this.baby_count = Enumerable.from(await this.my_babies).count();
   }
 
-  async deleteBaby(key) {
+  async deleteBaby() {
     await this.get_init_count();
   }
 
   showBaby(id: string) {
-    console.log(id);
     this.navCtrl.setRoot(HomePage, { id: id });
   }
 
   newBaby() {
-    this.forceAddDialog = true;
+    let addbaby_modal = this.modal.create(AddbabyModalPage, {id: 'id'});
+    addbaby_modal.onDidDismiss((data) => this.get_init_count());
+    addbaby_modal.present();
   }
 
   share(ev: any) {

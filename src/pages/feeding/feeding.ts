@@ -41,7 +41,7 @@ export class FeedingPage {
   }
 
   saveFeeding(ev: TimeVol, editType, key) {
-    let log: NursingLog = { type: this.feedingType, volume: ev.volume, time: ev.time, date: ev.date };
+    let log: NursingLog = { type: this.feedingType, volume: ev.volume, time: ev.time, date: ev.date, note: ev.note };
     this.fbs.push_nursing_log(this.id, log);
     this.viewCtrl.dismiss();
   }

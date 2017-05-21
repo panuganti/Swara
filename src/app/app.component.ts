@@ -8,14 +8,22 @@ import { LoginPage } from '../pages/login/login';
 import { HomePage } from '../pages/home/home';
 import { ProfilesPage } from '../pages/profiles/profiles';
 import { FriendsPage } from '../pages/friends/friends';
+import { MyProfilePage } from '../pages/my-profile/my-profile';
+import { SettingsPage } from '../pages/settings/settings';
+
 import { Utils } from '../library/utils';
 import { FirebaseService } from '../providers/firebase-service';
+import { User } from '../library/entities';
+
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   rootPage: any;
+  profileImg: string;
+  name: string;
+
   pages: any = [
     {
       title: 'Home',
@@ -34,6 +42,18 @@ export class MyApp {
       icon: 'ios-people-outline',
       count: 0,
       component: FriendsPage // TODO:
+    },
+    {
+      title: 'My Profile',
+      icon: 'ios-person-outline',
+      count: 0,
+      component: MyProfilePage
+    },
+    {
+      title: 'Settings',
+      icon: 'ios-settings-outline',
+      count: 0,
+      component: SettingsPage
     }
   ];
 
@@ -48,6 +68,11 @@ export class MyApp {
       }
       this.set_root();
     });
+  }
+
+  goToMyProfilePage() {
+    console.log('going to my profile page');
+    this.rootPage = MyProfilePage;
   }
 
   // Only for testing
@@ -84,14 +109,27 @@ export class MyApp {
           await this.routeToHomeOrProfilesPage();          
         });
         login_modal.present();
-        //this.rootPage = LoginPage;
       }
     }
   }
 
   async routeToHomeOrProfilesPage() {
+    var phone = window.localStorage.getItem('phone');
+    let user: User[] = await this.fbs.get_users_once(phone);
+    if (user && user.length > 0 && user[0].displayName) {
+      this.name = user[0].displayName;
+    }
+    else {
+      let email = window.localStorage.getItem('email');
+      this.name = email;
+    }
+
+    if (user && user.length > 0 && user[0].picture) {
+      this.profileImg = user[0].picture;
+    }
+
     var mybabies = await this.fbs.get_my_babies_once();
-    if (mybabies != null) {
+    if (mybabies != null && mybabies.length > 0) {
       this.rootPage = HomePage;
       return;
     }

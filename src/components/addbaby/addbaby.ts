@@ -98,9 +98,9 @@ export class AddBabyComponent {
 
   async getImage(coptions: CameraOptions) {
     try {
-      this.presentLoading("Loading from gallery")
       let data = await this.camera.getPicture(coptions);
       this.image = "data:image/jpeg;base64," + data;
+      this.presentLoading("Loading from gallery")
       this.image = await this.uploader.upload_image(this.image);
       this.showImg = true;
       this.loader.dismiss();

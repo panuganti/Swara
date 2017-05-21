@@ -14,5 +14,32 @@
 </ion-header>
 
 <ion-content>
-<time-date-vol  volumelabel="Volume (in ml)" defaultDate="{{getDate()}}" defaultVolume="{{pumpingVolume}}" (save)="savePumping($event, editType, key)"> </time-date-vol>
+  <time-date defaultDate="{{getDate()}}" (timedate)="updatetimedate($event)"> </time-date>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label floating color="primary">Volume (in ml)</ion-label>
+          <ion-input type="number" [(ngModel)]="volume"> </ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label floating color="primary">Volume (in ml)</ion-label>
+          <ion-input type="number" [(ngModel)]="volume"> </ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label floating color="primary">Volume (in ml)</ion-label>
+          <ion-input type="number" [(ngModel)]="volume"> </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-item>
+    <ion-textarea [(ngModel)]="notes" placeholder="Notes"> </ion-textarea>
+  </ion-item>
+  <button ion-button block [disabled]="time==null || date==null || volume==0 || volume==null" (click)="saveClicked()" color="dark"> Save </button>
+
 </ion-content>

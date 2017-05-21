@@ -13,6 +13,9 @@ import { FriendsPage } from '../pages/friends/friends';
 import { FeedingPage } from '../pages/feeding/feeding';
 import { DiaperPage } from '../pages/diaper/diaper';
 import { PumpingPage } from '../pages/pumping/pumping';
+import { AddbabyModalPage } from '../pages/addbaby-modal/addbaby-modal';
+import { SettingsPage } from '../pages/settings/settings';
+import { MyProfilePage } from '../pages/my-profile/my-profile';
 
 // Import All Components
 import {BabyComponent} from '../components/baby/baby';
@@ -34,7 +37,7 @@ enableProdMode();
 declare var Date;
 
 export const firebaseConfig = {
-};
+  };
 
 const pages: any[] = [
     MyApp,
@@ -44,7 +47,10 @@ const pages: any[] = [
     FriendsPage,
     FeedingPage,
     DiaperPage,
-    PumpingPage
+    PumpingPage,
+    AddbabyModalPage,
+    SettingsPage,
+    MyProfilePage
 ]
 
 const components: any[] = [

@@ -2,15 +2,14 @@ import { FirebaseService } from '../providers/firebase-service';
 import { Observable } from 'rxjs/Rx';
 import * as Enumerable from 'linq';
 import { User, Baby, MyBaby, NursingLog, PumpingLog, DiaperLog } from '../library/entities';
-import { AngularFire } from 'angularfire2';
 
 export class FirebaseMock extends FirebaseService {
-    NursingLog: {[id:string]:NursingLog[]} = {}; 
-    PumpingLog: {[id:string]:PumpingLog[]} = {}; 
-    DiaperLog: {[id:string]:DiaperLog[]} = {}; 
-    Babies: {[id:string]: Baby} = {};
-    MyBabies: {[id:string]:MyBaby} = {};
-    Users: {[id:string]: User} = {};
+    NursingLog: { [id: string]: NursingLog[] } = {};
+    PumpingLog: { [id: string]: PumpingLog[] } = {};
+    DiaperLog: { [id: string]: DiaperLog[] } = {};
+    Babies: { [id: string]: Baby } = {};
+    MyBabies: { [id: string]: MyBaby } = {};
+    Users: { [id: string]: User } = {};
     isLoggedIn: boolean;
 
     init_load() {
@@ -29,23 +28,24 @@ export class FirebaseMock extends FirebaseService {
         if (diaper_logs) { this.DiaperLog = diaper_logs; }
     }
 
-    private save_users() { 
-        window.localStorage.setItem('users',JSON.stringify(this.Users));
+    private save_users() {
+        window.localStorage.setItem('users', JSON.stringify(this.Users));
     }
+
     private save_babies() {
-        window.localStorage.setItem('babies',JSON.stringify(this.Babies));
-     }
-    private save_my_babies() { 
-        window.localStorage.setItem('my_babies',JSON.stringify(this.MyBabies));
+        window.localStorage.setItem('babies', JSON.stringify(this.Babies));
+    }
+    private save_my_babies() {
+        window.localStorage.setItem('my_babies', JSON.stringify(this.MyBabies));
     }
     private save_nursing_log() {
-        window.localStorage.setItem('nursing_log',JSON.stringify(this.NursingLog));
+        window.localStorage.setItem('nursing_log', JSON.stringify(this.NursingLog));
     }
     private save_pumping_log() {
-        window.localStorage.setItem('pumping_log',JSON.stringify(this.PumpingLog));
+        window.localStorage.setItem('pumping_log', JSON.stringify(this.PumpingLog));
     }
     private save_diaper_log() {
-        window.localStorage.setItem('diaper_log',JSON.stringify(this.DiaperLog));
+        window.localStorage.setItem('diaper_log', JSON.stringify(this.DiaperLog));
     }
 
     is_logged_in(): boolean {
@@ -65,7 +65,6 @@ export class FirebaseMock extends FirebaseService {
     }
 
     async login(email, phone, passwd): Promise<void> {
-        let user = JSON.parse(window.localStorage.getItem('user'));
         this.create_user(email, passwd);
     }
 
@@ -77,7 +76,7 @@ export class FirebaseMock extends FirebaseService {
         }
     }
 
-//#region Log
+    //#region Log
     get_nursing_log(key): Observable<any> {
         return Observable.of(this.NursingLog[key]);
     }
@@ -85,11 +84,11 @@ export class FirebaseMock extends FirebaseService {
     async get_nursing_log_once(key: string, date: string): Promise<any> {
         let log = this.NursingLog[key];
         return Promise.resolve(Enumerable.from(log)
-                                .where(l => l.date == date).toArray());
+            .where(l => l.date == date).toArray());
     }
 
     async delete_nursing_log(key): Promise<void> {
-        if (!this.NursingLog[key]) {return;}
+        if (!this.NursingLog[key]) { return; }
         delete this.NursingLog[key];
         this.save_nursing_log();
     }
@@ -110,11 +109,11 @@ export class FirebaseMock extends FirebaseService {
     async get_pumping_log_once(key: string, date: string): Promise<any> {
         let log = this.PumpingLog[key];
         return Promise.resolve(Enumerable.from(log)
-                                .where(l => l.date == date).toArray());
+            .where(l => l.date == date).toArray());
     }
 
     async delete_pumping_log(key): Promise<void> {
-        if (!this.PumpingLog[key]) {return;}
+        if (!this.PumpingLog[key]) { return; }
         delete this.PumpingLog[key];
         this.save_pumping_log();
     }
@@ -135,11 +134,11 @@ export class FirebaseMock extends FirebaseService {
     async get_diaper_log_once(key: string, date: string): Promise<any> {
         let log = this.DiaperLog[key];
         return Promise.resolve(Enumerable.from(log)
-                                .where(l => l.date == date).toArray());
+            .where(l => l.date == date).toArray());
     }
 
     async delete_diaper_log(key): Promise<void> {
-        if (!this.DiaperLog[key]) {return;}
+        if (!this.DiaperLog[key]) { return; }
         delete this.DiaperLog[key];
         this.save_diaper_log();
     }
@@ -153,7 +152,7 @@ export class FirebaseMock extends FirebaseService {
         this.save_diaper_log();
     }
 
-//#endregion Log
+    //#endregion Log
 
     get_baby_obs(key: string): Observable<any> {
         return Observable.of(this.Babies[key]);
@@ -167,6 +166,11 @@ export class FirebaseMock extends FirebaseService {
     async delete_baby_from_my_babies(key: string): Promise<void> {
         delete this.MyBabies[key];
         this.save_my_babies();
+    }
+
+    async update_user(phone: string, user) {
+        this.Users[phone] = user;
+        this.save_users();
     }
 
     async get_baby_once(key: string) {
@@ -186,11 +190,11 @@ export class FirebaseMock extends FirebaseService {
 
     async get_users_once(phone: string): Promise<any> {
         if (!this.Users || !this.Users[phone]) { return null; }
-        await Promise.resolve(this.Users[phone]);
+        let user = this.Users[phone];
+        await Promise.resolve(user);
     }
 
     push_my_baby(my_baby: MyBaby) {
-        let phone = window.localStorage.getItem('phone');
         let id = Date.now().toString();
         this.MyBabies[id] = my_baby;
         this.save_my_babies();
@@ -198,7 +202,7 @@ export class FirebaseMock extends FirebaseService {
 
     push_baby(baby: Baby): string {
         let id = Date.now().toString();
-        this.Babies[id] =  baby;
+        this.Babies[id] = baby;
         this.save_babies()
         return id;
     }
@@ -207,10 +211,8 @@ export class FirebaseMock extends FirebaseService {
         this.Users[user.phone] = user;
     }
 
-    //#region Image Uploader
     async upload_image(imgname: string, fileurl: string, progress_handler: any, error_handler: any, complete_handler: any): Promise<string> {
         return await Promise.resolve(fileurl);
     }
-    //#endregion Image Uploader
 
 }

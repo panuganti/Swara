@@ -3,8 +3,6 @@ import { NavController, ViewController } from 'ionic-angular';
 import { FirebaseListObservable} from 'angularfire2';
 import { SMS } from "@ionic-native/sms";
 import { Utils } from '../../library/utils';
-//import { HomePage } from '../home/home';
-import { User } from '../../library/entities';
 import { FirebaseService } from '../../providers/firebase-service';
 
 @Component({
@@ -96,6 +94,8 @@ export class LoginPage {
     try {
       var users = await this.fbs.get_users_once(this.phone.toString());
       if (users != null) {return;}
+      window.localStorage.setItem('email', this.email);
+      debugger;
       var new_user = { phone: this.phone.toString(), email: this.email };
       await this.fbs.push_user(new_user);
     }

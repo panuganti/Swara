@@ -1,13 +1,18 @@
 // Start todo comment
 export interface TimeVolType  extends TimeType {
     volume: number;
+    $ref?: string;
 }
 
-export interface TimeType extends Time {
+export interface TimeType extends TimeNote {
     type: string;
 }
 
 export interface Diaper extends TimeType {
+}
+
+export interface TimeNote extends Time {
+    note: string;
 }
 
 export interface Time {
@@ -17,24 +22,25 @@ export interface Time {
 // End todo comment
 
 
-export interface NursingLog extends TimeVolType {   
+export interface NursingLog extends TimeVolType {
 }
 
-export interface PumpingLog extends TimeVolType {    
+export interface PumpingLog extends TimeVolType {
 }
 
-export interface DiaperLog extends Time {    
-    type: string;
+export interface DiaperLog extends Diaper {  
+    $ref?: string;
 }
 
 export interface MyBaby {
     admintype: string;
     babyid: string;
     default: boolean;
+    $ref?: string;
 }
 
 
-export interface TimeVol extends Time {
+export interface TimeVol extends TimeNote {
     volume: number;
 }
 
@@ -44,6 +50,7 @@ export interface Baby {
     gender: string;
     momsname: string;
     imgUrl: string;
+    $ref?: string;
 }
 
 export enum MessageType {
@@ -51,12 +58,12 @@ export enum MessageType {
 }
 
 export interface Message {
-  _id?: string;
   content?: string;
   createdAt?: Date;
   type?: MessageType
   createdBy?: string;
-  isRead?: boolean
+  isRead?: boolean;
+  $ref?: string;
 }
 
 export interface ChatRoom {
@@ -73,6 +80,7 @@ export interface User {
     phone: string;
     email: string;
     picture?: string;
+    $ref?: string;
 }
 
 export class MyContact {

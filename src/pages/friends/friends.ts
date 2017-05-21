@@ -5,7 +5,7 @@ import * as Enumerable from 'linq';
 import { ChatRoom, User, MyContact, MyContactField } from '../../library/entities';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 import 'rxjs/add/operator/toPromise';
-import { FirebaseService } from '../../providers/firebase-service';
+//import { FirebaseService } from '../../providers/firebase-service';
 
 @Component({
   selector: 'page-friends',
@@ -26,7 +26,6 @@ export class FriendsPage {
       .selectMany(c => Enumerable.from(c.phoneNumbers)
         .select(p => this.toMyContact(p, c)))
       .where(c => this.isAValidContact(c));
-//    console.log(flattened_contacts.toArray());
     this.chats = await Promise.all(await flattened_contacts
       .select(async c => await this.load_chat_room(c, myself)).distinct().toArray());
   }

@@ -29,7 +29,7 @@ pumpingVolume: number;
   }
 
   savePumping(ev: TimeVol, editType, key) {
-    let log: PumpingLog = { type: 'both', volume: ev.volume, time: ev.time, date: ev.date };
+    let log: PumpingLog = { type: 'both', volume: ev.volume, time: ev.time, date: ev.date, note: ev.note };
     this.fbs.push_pumping_log(this.id, log);
     this.viewCtrl.dismiss();
   }

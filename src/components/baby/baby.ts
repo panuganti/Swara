@@ -36,7 +36,7 @@ export class BabyComponent {
 
   async init() {
     let baby = await this.fbs.get_baby_once(this.id);
-    if (baby && baby != null) {
+    if (baby && baby != null && baby.length > 0) {
       this.name = baby[0].name;
       this.dob = baby[0].dob;
       this.gender = baby[0].gender;
@@ -53,7 +53,7 @@ export class BabyComponent {
       this.fbs.delete_diaper_log(this.id);
       this.fbs.delete_baby(this.id);
     }
-      this.delete.emit();
+    this.delete.emit();
   }
 
   showClicked() {

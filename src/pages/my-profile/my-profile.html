@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-navbar color="truered">
+    <button ion-button menuToggle> <ion-icon name="menu"></ion-icon> </button>
+    <ion-title class="center"> My Profile </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <div class="center" >
+      <img *ngIf="image" src="{{image}}" (click)="getFromGallery()">
+        <ion-icon *ngIf="!image" class="big-font" name="ios-camera-outline" (click)="getFromGallery()"> </ion-icon>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label floating color="primary">Name </ion-label>
+      <ion-input type="text" [(ngModel)]="name" (ionChange)="name_changed()"> </ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>

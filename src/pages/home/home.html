@@ -21,55 +21,6 @@
   <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" (diapering)="showDiaperDialog()">
   </event-selector>
 
-<!--
-  <ion-card *ngIf="showAlarmCard">
-    <ion-content>
-      <time-date defaultDate="{{alarmTime}}"> </time-date>
-      <ion-item>
-        <ion-textarea [(ngModel)]="alarmNote" rows=2> </ion-textarea>
-      </ion-item>
-      <button ion-button> </button>
-    </ion-content>
-  </ion-card>
--->
-  <!-- Begin Add Feeding Record - ->
-  <ion-card *ngIf="showFeeding">
-    <ion-card-header> Feeding </ion-card-header>
-    <ion-list>
-      <ion-item>
-        <ion-label color="primary">Feeding Type</ion-label>
-        <ion-select [(ngModel)]="feedingType">
-          <ion-option value="breastfeeding">Breast Feeding</ion-option>
-          <ion-option value="pumped">Pumped Breast Milk</ion-option>
-          <ion-option value="formula">Formula</ion-option>
-        </ion-select>
-      </ion-item>
-    </ion-list>
-    <ion-card-content *ngIf="feedingType == 'breastfeeding'">
-      <time-date-vol volumelabel="Duration (in mins)" defaultDate="{{feedingDate}}" defaultVolume="{{feedingVolume}}" (save)="saveFeeding($event,'breastfeeding', editType, key)"></time-date-vol>
-    </ion-card-content>
-    <ion-card-content *ngIf="feedingType == 'pumped'">
-      <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{feedingDate}}" defaultVolume="{[feedingVolume}}" (save)="saveFeeding($event,'pumped', editType, key)"></time-date-vol>
-    </ion-card-content>
-    <ion-card-content *ngIf="feedingType == 'formula'">
-      <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{feedingDate}}" defaultVolume="{{feedingVolume}}" (save)="saveFeeding($event,'formula', editType, key)"></time-date-vol>
-    </ion-card-content>
-  </ion-card>
-  <!-- End Add Feeding Record - ->
-
-  <!-- Begin Add Pumping Record - ->
-  <ion-card *ngIf="showPumping">
-    <ion-card-header> Pumping </ion-card-header>
-    <time-date-vol volumelabel="Volume (in ml)" defaultDate="{{pumpingDate}}" defaultVolume="{{pumpingVolume}}" (save)="savePumping($event, editType, key)"></time-date-vol>
-  </ion-card>
-  <!-- End Add Pumping Record -->
-
-  <!-- Begin Add Diaper Record - ->
-  <ion-card *ngIf="showDiaper">
-    <diaper defaultDate="{{diaperDate}}" defaultType="{{diaperType}}" (save)="saveDiaper($event, editType, key)"> </diaper>
-  </ion-card>
-  <!-- End Add Diaper Record -->
-
   <!-- Begin  Feeding Summary -->
   <ion-card color="primary">
     <ion-card-header>

@@ -23,10 +23,6 @@
       </ion-select>
     </ion-item>
   </ion-list>
-  <ion-card>
-    <ion-card-content>
-      <time-date-vol volumelabel="{{getVolumeLabel(feedingType)}}" defaultDate="{{getDate()}}" defaultVolume="{{feedingVolume}}"
-        (save)="saveFeeding($event, editType, key)"></time-date-vol>
-    </ion-card-content>
-  </ion-card>
+  <time-date-vol volumelabel="{{getVolumeLabel(feedingType)}}" defaultDate="{{getDate()}}" defaultVolume="{{feedingVolume}}"
+    (save)="saveFeeding($event, editType, key)"></time-date-vol>
 </ion-content>
