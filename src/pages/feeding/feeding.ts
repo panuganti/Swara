@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { FirebaseService } from '../../providers/firebase-service';
-import { NursingLog, TimeVol } from '../../library/entities';
+import { TimeVol } from '../../library/entities';
+import { NursingLog } from '../../library/fb-entities';
 import * as moment from 'moment';
 
 @Component({

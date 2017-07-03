@@ -13,7 +13,7 @@ import { SettingsPage } from '../pages/settings/settings';
 
 import { Utils } from '../library/utils';
 import { FirebaseService } from '../providers/firebase-service';
-import { User } from '../library/entities';
+import { User } from '../library/fb-entities';
 
 
 @Component({

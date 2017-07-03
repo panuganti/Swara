@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, AlertController, Alert, ModalController} from 'ionic-angular';
-import { TimeVolType } from '../../library/entities';
+import { TimeVolType, MyBaby, Baby  } from '../../library/fb-entities';
 
 import { ProfilesPage } from '../profiles/profiles';
 import { LocalNotifications } from '@ionic-native/local-notifications';
@@ -9,7 +9,6 @@ import { DiaperPage } from '../diaper/diaper';
 import { PumpingPage } from '../pumping/pumping';
 
 import { Utils } from '../../library/utils';
-import { MyBaby, Baby } from '../../library/entities';
 import { FirebaseService } from '../../providers/firebase-service';
 
 import { Observable } from 'rxjs/Rx';

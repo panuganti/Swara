@@ -3,7 +3,7 @@ import 'rxjs/add/operator/map';
 import * as firebase from 'firebase';
 import { AngularFire, FirebaseListObservable, AuthMethods, AuthProviders, FirebaseAuthState } from 'angularfire2';
 import { Observable } from 'rxjs/Rx';
-import { MyBaby, Baby, User, NursingLog, PumpingLog, DiaperLog } from '../library/entities';
+import { MyBaby, Baby, User, NursingLog, PumpingLog, DiaperLog } from '../library/fb-entities';
 
 @Injectable()
 export class FirebaseService {

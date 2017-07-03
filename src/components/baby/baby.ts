@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FirebaseService } from '../../providers/firebase-service';
-import { Baby } from '../../library/entities';
+import { Baby } from '../../library/fb-entities';
 
 @Component({
   selector: 'baby',

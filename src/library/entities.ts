@@ -1,9 +1,3 @@
-// Start todo comment
-export interface TimeVolType  extends TimeType {
-    volume: number;
-    $ref?: string;
-}
-
 export interface TimeType extends TimeNote {
     type: string;
 }
@@ -21,69 +15,32 @@ export interface Time {
 }
 // End todo comment
 
-
-export interface NursingLog extends TimeVolType {
-}
-
-export interface PumpingLog extends TimeVolType {
-    left_volume?: number;
-    right_volume?: number;
-}
-
-export interface DiaperLog extends Diaper {  
-    $ref?: string;
-}
-
-export interface MyBaby {
-    admintype: string;
-    babyid: string;
-    default: boolean;
-    $ref?: string;
-}
-
-
 export interface TimeVol extends TimeNote {
     volume: number;
 }
 
-export interface Baby {
-    name: string;
-    dob: string;
-    gender: string;
-    momsname: string;
-    imgUrl: string;
-    $ref?: string;
-}
-
+// Chatrooms
 export enum MessageType {
-  TEXT = <any>'text'
+    TEXT = <any>'text'
 }
 
 export interface Message {
-  content?: string;
-  createdAt?: Date;
-  type?: MessageType
-  createdBy?: string;
-  isRead?: boolean;
-  $ref?: string;
-}
-
-export interface ChatRoom {
-  _ids?: string[];
-  _roomid?: string;
-  title?: string;
-  picture?: string;
-  lastMessage?: Message;
-  inNetwork: boolean;
-}
-
-export interface User {
-    displayName?: string;
-    phone: string;
-    email: string;
-    picture?: string;
+    content?: string;
+    createdAt?: Date;
+    type?: MessageType
+    createdBy?: string;
+    isRead?: boolean;
     $ref?: string;
 }
+
+export interface MyChatRoom {
+    title?: string;
+    chatroom?: ChatRoom
+    inNetwork: boolean;
+    contact: MyContact;
+}
+// End
+
 
 export class MyContact {
     displayName: string;
@@ -95,4 +52,44 @@ export class MyContactField {
     pref?: boolean;
     value?: string;
     type?: string;
+}
+
+export interface ActiveChatRoom extends MyLocalChatRoom {
+    chatroom_id: string;
+    last_message: string;
+    unread_count: number;
+}
+
+export interface InNetworkChatRoom extends MyLocalChatRoom {
+    chatroom_id?: string;
+    userid: string;
+}
+
+export interface NotInNetworkChatRoom extends MyLocalChatRoom {
+}
+
+export interface MyLocalChatRoom {
+    title: string;
+    contact: MyContact;
+    picture?: string;
+}
+
+// Entities in db
+export interface ChatRoom {
+    _roomid?: string;
+    picture?: string;
+    lastMessage?: Message;
+}
+
+export interface DbChatRoom extends DbEntity {
+    title: string;
+    picture?: string;
+}
+
+export interface DbMyChatRoom extends DbEntity{
+    chatroom_id: string;
+}
+
+export interface DbEntity {
+    $ref: string;
 }

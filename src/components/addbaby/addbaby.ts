@@ -5,7 +5,7 @@ import { FirebaseService } from '../../providers/firebase-service';
 import { LoadingController, Loading } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ImageUploaderService } from '../../providers/image-uploader-service';
-import { MyBaby, Baby } from '../../library/entities';
+import { MyBaby, Baby } from '../../library/fb-entities';
 
 @Component({
   selector: 'addbaby',

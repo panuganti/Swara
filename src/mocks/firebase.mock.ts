@@ -1,7 +1,7 @@
 import { FirebaseService } from '../providers/firebase-service';
 import { Observable } from 'rxjs/Rx';
 import * as Enumerable from 'linq';
-import { User, Baby, MyBaby, NursingLog, PumpingLog, DiaperLog } from '../library/entities';
+import { User, Baby, MyBaby, NursingLog, PumpingLog, DiaperLog } from '../library/fb-entities';
 
 export class FirebaseMock extends FirebaseService {
     NursingLog: { [id: string]: NursingLog[] } = {};

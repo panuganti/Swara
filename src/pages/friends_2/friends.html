@@ -1,5 +1,6 @@
 <ion-header>
-  <ion-navbar color="truered">
+  <!--
+  <ion-navbar color="whatsapp">
     <ion-title>
       Chats
     </ion-title>
@@ -12,9 +13,11 @@
       </button>
     </ion-buttons>
   </ion-navbar>
+  -->
 </ion-header>
 
 <ion-content class="chats-page-content">
+<!--
   <ion-list class="chats">
     <button *ngFor="let chat of chats" ion-item class="chat" (click)="showMessages(chat)">
         <img class="chat-picture" [src]="chat.picture">
@@ -23,17 +26,18 @@
           <button class="invite-button" ion-button *ngIf="!chat.inNetwork" secondary (click)="invite(chat)"> 
             INVITE 
           </button>
-    <span *ngIf="!chat.inNetwork" class="last-message"> 
+          <span *ngIf="!chat.inNetwork" class="last-message"> 
             <p class="last-message-content last-message-content-text">Hey, Please send me an invite </p>
           </span>
-    <span *ngIf="chat.inNetwork && chat.lastMessage == null" class="last-message"> 
+          <span *ngIf="chat.inNetwork && chat.lastMessage == null" class="last-message"> 
             <p class="last-message-content last-message-content-text">Hey, I'm using Baby Tracker </p>
           </span>
-    <span *ngIf="chat.lastMessage" class="last-message">
+          <span *ngIf="chat.lastMessage" class="last-message">
             <p *ngIf="chat.lastMessage.type == 'text'" class="last-message-content last-message-content-text">{{chat.lastMessage.content}}</p>
             <span class="last-message-timestamp">{{ chat.lastMessage.createdAt | amCalendar }}</span>
-    </span>
-    </div>
-    </button>
+          </span>
+        </div>
+      </button>
   </ion-list>
+-->
 </ion-content>

@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { MyContacts } from '../../providers/my-contacts';
 import * as Enumerable from 'linq';
-import { ChatRoom, User, MyContact, MyContactField } from '../../library/entities';
-import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import { MyChatRoom, ChatRoom, MyContact, MyContactField } from '../../library/entities';
+import { User } from '../../library/fb-entities';
+
 import 'rxjs/add/operator/toPromise';
-//import { FirebaseService } from '../../providers/firebase-service';
+import { FirebaseService } from '../../providers/firebase-service';
+import { Observable } from 'rxjs/Rx';
 
 @Component({
   selector: 'page-friends',
@@ -13,11 +15,16 @@ import 'rxjs/add/operator/toPromise';
 })
 export class FriendsPage {
   chats: ChatRoom[];
-  users: FirebaseListObservable<any>;
-  chatrooms: FirebaseListObservable<any>;
+  users: Observable<any>;
+  chatrooms: Observable<any>;
 
-  constructor(public navCtrl: NavController, public mycontacts: MyContacts, public af: AngularFire) { }
-  ionViewDidLoad() { this.load_contacts(); }
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+              public fbs: FirebaseService,  public mycontacts: MyContacts) {
+  }
+
+  ionViewDidLoad() {
+    this.load_contacts();
+  }
 
   async load_contacts() {
     let myself = await this.get_me();
@@ -30,26 +37,15 @@ export class FriendsPage {
       .select(async c => await this.load_chat_room(c, myself)).distinct().toArray());
   }
 
-  async load_chat_room(contact: MyContact, me: User): Promise<ChatRoom> {
+  async load_chat_room(contact: MyContact, me: User): Promise<MyChatRoom> {
     //    1. Look in Users if anyone with the phone number
-    var userMap = (await this.af.database.list('/Users').$ref.orderByChild('phone')
-                      .equalTo(contact.phoneNumbers[0].value).once('value')).val();
+    //let contact_phone = contact.phoneNumbers[0].value;
+    //let contact_user = await this.fbs.get_users_once(contact_phone);
     //    2. if not, generate not-in-network chatroom and return;
-    if (userMap == null) {
-      return { title: contact.displayName, inNetwork: false };
-    }
-
     //  3. User exists but not chatroom, return empty chatroom
-    let user: User = Enumerable.from(userMap).first().value;
-    let roomid = this.get_room_id(me.phone, user.phone);
-    var chatroom: any = (await this.af.database.list('/ChatRoom_' + roomid).$ref.once('value')).val();
-    if (chatroom == null) {
-      return { _ids: [user.phone, me.phone], _roomid: roomid, title: contact.displayName, picture: user.picture, inNetwork: true };
-    }
 
     //  4. Get last message from the chatroom    
-    chatroom.lastMessage = Enumerable.from(chatroom).last().value;
-    return chatroom;
+    return null;
   }
 
   isAValidContact(mycontact: MyContact): boolean {
@@ -69,15 +65,8 @@ export class FriendsPage {
 
   async get_me(): Promise<User> {
     let phone = window.localStorage.getItem('phone');
-    let meMap: MyContact = (await this.af.database.list('/Users').$ref
-      .orderByChild('phone').equalTo(phone).once('value')).val();
-    let me: User = Enumerable.from(meMap).first().value;
-    return me;
-  }
-
-  get_room_id(id1: string, id2: string): string {
-    if (id1 < id2) { return id1 + '_' + id2; }
-    return id2 + '_' + id1;
+    let myself = await this.fbs.get_users_once(phone);
+    return myself;
   }
 
   showMessages(chat): void {

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { LoadingController, Loading } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-//import { FirebaseService } from '../../providers/firebase-service';
 import { ImageUploaderService } from '../../providers/image-uploader-service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController, Loading } from 'ionic-angular';
 import { FirebaseService } from '../../providers/firebase-service';
-import { User } from '../../library/entities';
+import { User } from '../../library/fb-entities';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ImageUploaderService } from '../../providers/image-uploader-service';
 
