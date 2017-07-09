@@ -106,18 +106,20 @@ export class HomePage {
   showAlarm(type) {
     this.showAlarmCard = true;
     this.alarmTime = moment().add(3,'h').format();
-    this.alarmNote = '';
+    this.alarmType = type;
   }
 
   showAlarmCard: boolean = false;
   alarmTime: string;
   alarmNote: string;
-  setAlarm(type: string) {
+  alarmType: string;
+  onetime: string = 'onetime';
+  setAlarm() {
     this.localNotifications.schedule({
       id: 1, text: this.alarmNote, at: new Date(this.alarmTime), 
-      led: 'FF0000', title: type
+      led: 'FF0000', title: this.alarmType
     });
-    this.showAlarmCard = true;
+    this.showAlarmCard = false;
   }
 
   formatTime(time: string): string {

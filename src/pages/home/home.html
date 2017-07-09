@@ -6,18 +6,34 @@
 
 <ion-content>
   <date-selector (date)="setDate($event)"> </date-selector>
-  <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" 
-  (diapering)="showDiaperDialog()"> 
+  <event-selector (feeding)="showFeedingDialog()" (pumping)="showPumpingDialog()" (diapering)="showDiaperDialog()">
   </event-selector>
 
-  <ion-card *ngIf="showAlarmCard"> 
-    <ion-content> 
+  <ion-card *ngIf="showAlarmCard">
+    <ion-card-header color="primary">
+      Set Reminder
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list radio-group [(ngModel)]="onetime">
+        <ion-item>
+          <ion-label>One Time</ion-label>
+          <ion-radio value="onetime" checked="true"></ion-radio>
+        </ion-item>
+        <ion-item>
+          <ion-label>Recurring</ion-label>
+          <ion-radio value="recurring"></ion-radio>
+        </ion-item>
+      </ion-list>
       <time-date defaultDate="{{alarmTime}}"> </time-date>
-      <ion-item> 
-        <ion-textarea [(ngModel)]="alarmNote" rows=2> </ion-textarea>
+      <ion-item>
+        <ion-label floating color="dark"> Interval (in hrs) </ion-label>
+        <ion-input type="number" *ngIf="onetime!='onetime'" [(ngModel)]="alarmInterval"> </ion-input>
       </ion-item>
-      <button ion-button (click)=""> </button>
-    </ion-content>
+      <ion-item>
+        <ion-textarea [(ngModel)]="alarmNote" rows=2 placeholder="Note"> </ion-textarea>
+      </ion-item>
+      <button ion-button block (click)="setAlarm()"> Set Alarm</button>
+    </ion-card-content>
   </ion-card>
 
   <!-- Begin Add Feeding Record -->
