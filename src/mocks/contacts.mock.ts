@@ -1,6 +1,4 @@
-import { Contacts, Contact, ContactFieldType, IContactFindOptions, ContactField } from '@ionic-native/contacts';
 import { MyContacts } from '../providers/my-contacts';
-import * as Enumerable from 'linq';
 import { MyContact } from '../library/entities';
 
 export class MyContactsMock extends MyContacts {
