@@ -14,7 +14,7 @@ export class BabyComponent {
 
   showShareToolbar: boolean = false;
   email: string;
-
+  color: string = "border-left: 2px solid blue;";
   baby: FirebaseObjectObservable<any>;
 
   constructor(public af: AngularFire) {

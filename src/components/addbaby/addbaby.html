@@ -1,3 +1,5 @@
+<ion-card>
+<ion-card-header text-center> Enter Baby's Details</ion-card-header>
 <ion-list>
   <ion-item>
     <ion-label floating> Name </ion-label>
@@ -24,7 +26,7 @@
     </ion-grid>
   </ion-item>
   <ion-item>
-    <ion-label floating> Mama's Name </ion-label>
+    <ion-label floating> Mother's Name </ion-label>
     <ion-input type="text" [(ngModel)]="momsname" (change)="enableAddButton()"> </ion-input>
   </ion-item>
   <ion-item class="item-profile">
@@ -45,3 +47,4 @@
   <progress *ngIf="showProgressBar" value="{{progress}}" max="100"></progress>
   <button ion-button full color="primary" (click)="clicked()" [disabled]="!addbuttonenabled"> Create Baby's Profile </button>
 </ion-list>
+</ion-card>

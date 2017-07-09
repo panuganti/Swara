@@ -1,39 +1,44 @@
 <video autoplay poster="assets/resources/polina.jpg" id="bgvid" loop>
-  <!-- WCAG general accessibility recommendation is that media such as background video play through only once. 
-    Loop turned on for the purposes of illustration; if removed, the end of the video will fade in the same way created by pressing the "Pause" button  -->
   <source src="assets/resources/polina.webm" type="video/webm">
   <source src="assets/resources/polina.mp4" type="video/mp4">
 </video>
 
-<!-- Look for better solution than using a spacer -->
 <div class="spacer" style="width: auto; height: 50px;"></div>
 <ion-list>
-  <ion-item id="existingUser">
-    <ion-label>I'm an Existing User</ion-label>
-    <ion-checkbox [(ngModel)]="existing" (ionChange)="resetErrors()"></ion-checkbox>
+  <ion-item *ngIf="code_generation">
+    <ion-label  text-center>
+      <span> Please Verify your Phone to Get Started </span>
+      <p text-center>  We will send a one time SMS to verify your phone number. <br> <small>Carrier SMS charges may apply. </small> </p>
+    </ion-label>
+  </ion-item>
+  <ion-item *ngIf="verify_code">
+      <p text-center> An SMS with the secret code is sent to you by you <br> Please enter the secret code to Verify. </p>
   </ion-item>
 </ion-list>
 <div class="spacer" style="width: auto; height: 100px;"></div>
 
 <div id="polina">
   <ion-list>
-    <ion-item>
+    <ion-item *ngIf="verify_code">
+      <ion-label floating>Verification Code</ion-label>
+      <ion-input type="tel" [(ngModel)]="code" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="code_generation">
+      <ion-label floating>Phone</ion-label>
+      <ion-input type="tel" [(ngModel)]="phone" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="code_generation">
       <ion-label floating>Email</ion-label>
       <ion-input type="text" [(ngModel)]="email" required></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label floating>Password</ion-label>
-      <ion-input type="password" [(ngModel)]="password" required></ion-input>
     </ion-item>
     <ion-item *ngIf="showError">
       <span ion-text color="danger">{{error}}</span>
     </ion-item>
-    <button *ngIf="existing" ion-button (click)="login()" primary block> Sign In
-      <ion-spinner *ngIf="showSpinnie" name="ios"></ion-spinner>
+    <button ion-button *ngIf="code_generation" [disabled]="phone==null || phone.length < 10 || email==null || email.length < 4"
+      (click)="send_secret_code_sms()" primary block> Send Verification Code
     </button>
-    <button *ngIf="!existing" ion-button (click)="signup()" primary block>Sign Up
-      <ion-spinner *ngIf="showSpinnie" name="ios"></ion-spinner>
+    <button ion-button *ngIf="verify_code" [disabled]="phone==null || phone.length < 10 || email==null || email.length < 4"
+      (click)="verify()" dark block> Verify Code
     </button>
-    <button *ngIf="showForgotPasswd" ion-button (click)="forgotpasswd()" secondary block> Send Password Reset mail</button>
   </ion-list>
 </div>
